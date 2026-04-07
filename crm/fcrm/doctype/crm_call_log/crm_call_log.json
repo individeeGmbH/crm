@@ -46,6 +46,11 @@
    "reqd": 1
   },
   {
+   "fieldname": "summary",
+   "fieldtype": "Long Text",
+   "label": "Summary"
+  },
+  {
    "fieldname": "status",
    "fieldtype": "Select",
    "in_standard_filter": 1,
