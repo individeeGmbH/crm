@@ -95,6 +95,12 @@ class CRMCallLog(Document):
 				"width": "9rem",
 			},
 			{
+				"label": "Summary",
+				"type": "Long Text",
+				"key": "summary",
+				"width": "20rem",
+			},
+			{
 				"label": "Created On",
 				"type": "Datetime",
 				"key": "creation",
@@ -110,6 +116,7 @@ class CRMCallLog(Document):
 			"duration",
 			"from",
 			"to",
+			"summary",
 			"note",
 			"recording_url",
 			"reference_doctype",
