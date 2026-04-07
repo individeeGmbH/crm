@@ -81,10 +81,10 @@
         />
       </div>
       <div
-          v-if="call.custom_summary"
+          v-if="call.summary"
           class="text-sm text-gray-600 mt-2 pt-2 border-t border-gray-200"
       >
-        <strong class="text-gray-800">Summary:</strong> {{ call.custom_summary }}
+        <strong class="text-gray-800">Summary:</strong> {{ call.summary }}
       </div>
       <div
           v-if="
