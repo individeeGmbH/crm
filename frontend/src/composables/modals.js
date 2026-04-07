@@ -9,3 +9,6 @@ export const addressProps = ref({})
 export const showAboutModal = ref(false)
 
 export const showChangePasswordModal = ref(false)
+
+export const showCallLogModal = ref(false)
+export const callLogProps = ref({})

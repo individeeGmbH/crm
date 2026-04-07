@@ -47,6 +47,43 @@ class CRMCallLog(Document):
 		type: DF.Literal["Incoming", "Outgoing"]
 	# end: auto-generated types
 
+	def after_insert(self):
+		"""Trigger on new call logs"""
+		self._trigger_call_ended_modal()
+
+	def on_update(self):
+		"""Trigger only for telephony-like updates (multiple fields changed)"""
+		if not self.has_value_changed("status"):
+			return
+
+		# Check if it looks like a telephony update (multiple fields changed together)
+		telephony_fields_changed = sum([
+			self.has_value_changed("status"),
+			self.has_value_changed("end_time"),
+			self.has_value_changed("duration"),
+		])
+
+		if telephony_fields_changed >= 2:
+			self._trigger_call_ended_modal()
+
+	def _trigger_call_ended_modal(self):
+		"""Send realtime event to open modal"""
+		terminal_statuses = ["Completed", "No Answer", "Busy", "Failed", "Canceled"]
+
+		if self.status in terminal_statuses and not self.summary:
+			target_user = self.caller if self.type == "Outgoing" else self.receiver
+
+			if target_user:
+				frappe.publish_realtime(
+					event="crm_call_ended",
+					message={
+						"call_log_name": self.name,
+						"call_log": self.as_dict(),
+					},
+					user=target_user,
+					after_commit=True
+				)
+
 	@staticmethod
 	def default_list_data():
 		columns = [
