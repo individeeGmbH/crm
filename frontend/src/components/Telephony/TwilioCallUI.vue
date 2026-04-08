@@ -405,11 +405,8 @@ async function makeOutgoingCall(number) {
         log.value = `Call ended from makeOutgoing call disconnect.`
         const callSid = _call.parameters.CallSid
         if (callSid) {
-          callLogProps.value = {
-            data: { name: callSid },
-            options: {}
-          }
-          showCallLogModal.value = true
+          console.log('📞 Fetching call log:', callSid)
+          callLogResource.fetch({ name: callSid })
         }
 
         calling.value = false
@@ -469,6 +466,22 @@ function toggleCallWindow() {
   showCallPopup.value = !showCallPopup.value
   showSmallCallWindow.value = !showSmallCallWindow.value
 }
+
+const callLogResource = createResource({
+  url: 'crm.fcrm.doctype.crm_call_log.crm_call_log.get_call_log',
+  onSuccess(data) {
+    console.log('✅ Call log loaded:', data)
+    // Open the modal with the full data
+    callLogProps.value = {
+      data: data,  // Pass the full data object, not just { name: 'xxx' }
+      options: {}
+    }
+    showCallLogModal.value = true
+  },
+  onError(err) {
+    console.error('❌ Failed to load call log:', err)
+  }
+})
 
 watch(
   () => log.value,
