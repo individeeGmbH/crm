@@ -24,6 +24,7 @@
   <CallLogModal
       v-if="showCallLogModal"
       v-model="showCallLogModal"
+      :data="callLogDataForModal"
       v-bind="callLogProps"
   />
 </template>
@@ -49,5 +50,6 @@ import {
   showChangePasswordModal,
   showCallLogModal,
   callLogProps,
+  callLogDataForModal,
 } from '@/composables/modals'
 </script>

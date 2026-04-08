@@ -1,23 +1,23 @@
 <template>
   <div v-show="showCallPopup" v-bind="$attrs">
     <div
-      ref="callPopup"
-      class="fixed z-20 flex w-60 cursor-move select-none flex-col rounded-lg bg-surface-gray-7 p-4 text-ink-gray-2 shadow-2xl"
-      :style="style"
+        ref="callPopup"
+        class="fixed z-20 flex w-60 cursor-move select-none flex-col rounded-lg bg-surface-gray-7 p-4 text-ink-gray-2 shadow-2xl"
+        :style="style"
     >
       <div class="flex flex-row-reverse items-center gap-1">
         <MinimizeIcon
-          class="h-4 w-4 cursor-pointer"
-          @click="toggleCallWindow"
+            class="h-4 w-4 cursor-pointer"
+            @click="toggleCallWindow"
         />
       </div>
       <div class="flex flex-col items-center justify-center gap-3">
         <Avatar
-          v-if="contact?.image"
-          :image="contact.image"
-          :label="contact.full_name"
-          class="relative flex !h-24 !w-24 items-center justify-center [&>div]:text-[30px]"
-          :class="onCall || calling ? '' : 'pulse'"
+            v-if="contact?.image"
+            :image="contact.image"
+            :label="contact.full_name"
+            class="relative flex !h-24 !w-24 items-center justify-center [&>div]:text-[30px]"
+            :class="onCall || calling ? '' : 'pulse'"
         />
         <div class="flex flex-col items-center justify-center gap-1">
           <div class="text-xl font-medium">
@@ -33,19 +33,19 @@
         <div v-if="!onCall" class="my-1 text-base">
           {{
             callStatus == 'initiating'
-              ? __('Initiating call...')
-              : callStatus == 'ringing'
-                ? __('Ringing...')
-                : calling
-                  ? __('Calling...')
-                  : __('Incoming call...')
+                ? __('Initiating call...')
+                : callStatus == 'ringing'
+                    ? __('Ringing...')
+                    : calling
+                        ? __('Calling...')
+                        : __('Incoming call...')
           }}
         </div>
         <div v-if="onCall" class="flex gap-2">
           <Button
-            :icon="muted ? 'mic-off' : 'mic'"
-            class="rounded-full"
-            @click="toggleMute"
+              :icon="muted ? 'mic-off' : 'mic'"
+              class="rounded-full"
+              @click="toggleMute"
           />
           <!-- <Button class="rounded-full">
           <template #icon>
@@ -53,53 +53,53 @@
           </template>
         </Button> -->
           <Button
-            class="cursor-pointer rounded-full"
-            :tooltip="__('Add a Note')"
-            :icon="NoteIcon"
-            @click="showNoteModal = true"
+              class="cursor-pointer rounded-full"
+              :tooltip="__('Add a Note')"
+              :icon="NoteIcon"
+              @click="showNoteModal = true"
           />
           <Button
-            class="rounded-full bg-surface-red-5 hover:bg-surface-red-6 rotate-[135deg] text-ink-white"
-            :tooltip="__('Hang Up')"
-            :icon="PhoneIcon"
-            @click="hangUpCall"
+              class="rounded-full bg-surface-red-5 hover:bg-surface-red-6 rotate-[135deg] text-ink-white"
+              :tooltip="__('Hang Up')"
+              :icon="PhoneIcon"
+              @click="hangUpCall"
           />
         </div>
         <div v-else-if="calling || callStatus == 'initiating'">
           <Button
-            size="md"
-            variant="solid"
-            theme="red"
-            :label="__('Cancel')"
-            class="rounded-lg text-ink-white"
-            :disabled="callStatus == 'initiating'"
-            @click="cancelCall"
+              size="md"
+              variant="solid"
+              theme="red"
+              :label="__('Cancel')"
+              class="rounded-lg text-ink-white"
+              :disabled="callStatus == 'initiating'"
+              @click="cancelCall"
           >
             <template #prefix>
-              <PhoneIcon class="rotate-[135deg]" />
+              <PhoneIcon class="rotate-[135deg]"/>
             </template>
           </Button>
         </div>
         <div v-else class="flex gap-2">
           <Button
-            size="md"
-            variant="solid"
-            theme="green"
-            :label="__('Accept')"
-            class="rounded-lg text-ink-white"
-            :iconLeft="PhoneIcon"
-            @click="acceptIncomingCall"
+              size="md"
+              variant="solid"
+              theme="green"
+              :label="__('Accept')"
+              class="rounded-lg text-ink-white"
+              :iconLeft="PhoneIcon"
+              @click="acceptIncomingCall"
           />
           <Button
-            size="md"
-            variant="solid"
-            theme="red"
-            :label="__('Reject')"
-            class="rounded-lg text-ink-white"
-            @click="rejectIncomingCall"
+              size="md"
+              variant="solid"
+              theme="red"
+              :label="__('Reject')"
+              class="rounded-lg text-ink-white"
+              @click="rejectIncomingCall"
           >
             <template #prefix>
-              <PhoneIcon class="rotate-[135deg]" />
+              <PhoneIcon class="rotate-[135deg]"/>
             </template>
           </Button>
         </div>
@@ -107,17 +107,17 @@
     </div>
   </div>
   <div
-    v-show="showSmallCallWindow"
-    class="ml-2 flex cursor-pointer select-none items-center justify-between gap-3 rounded-lg bg-surface-gray-7 px-2 py-[7px] text-base text-ink-gray-2"
-    v-bind="$attrs"
-    @click="toggleCallWindow"
+      v-show="showSmallCallWindow"
+      class="ml-2 flex cursor-pointer select-none items-center justify-between gap-3 rounded-lg bg-surface-gray-7 px-2 py-[7px] text-base text-ink-gray-2"
+      v-bind="$attrs"
+      @click="toggleCallWindow"
   >
     <div class="flex items-center gap-2">
       <Avatar
-        v-if="contact?.image"
-        :image="contact.image"
-        :label="contact.full_name"
-        class="relative flex !h-5 !w-5 items-center justify-center"
+          v-if="contact?.image"
+          :image="contact.image"
+          :label="contact.full_name"
+          class="relative flex !h-5 !w-5 items-center justify-center"
       />
       <div class="max-w-[120px] truncate">
         {{ contact?.full_name ?? __('Unknown') }}
@@ -128,11 +128,11 @@
         {{ counterUp?.updatedTime }}
       </div>
       <Button
-        variant="solid"
-        theme="red"
-        class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
-        :icon="PhoneIcon"
-        @click.stop="hangUpCall"
+          variant="solid"
+          theme="red"
+          class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
+          :icon="PhoneIcon"
+          @click.stop="hangUpCall"
       />
     </div>
     <div v-else-if="calling" class="flex items-center gap-3">
@@ -140,37 +140,37 @@
         {{ callStatus == 'ringing' ? __('Ringing...') : __('Calling...') }}
       </div>
       <Button
-        variant="solid"
-        theme="red"
-        class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
-        :icon="PhoneIcon"
-        @click.stop="cancelCall"
+          variant="solid"
+          theme="red"
+          class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
+          :icon="PhoneIcon"
+          @click.stop="cancelCall"
       />
     </div>
     <div v-else class="flex items-center gap-2">
       <Button
-        variant="solid"
-        theme="green"
-        class="pulse relative !h-6 !w-6 rounded-full animate-pulse text-ink-white"
-        :tooltip="__('Accept Call')"
-        :icon="PhoneIcon"
-        @click.stop="acceptIncomingCall"
+          variant="solid"
+          theme="green"
+          class="pulse relative !h-6 !w-6 rounded-full animate-pulse text-ink-white"
+          :tooltip="__('Accept Call')"
+          :icon="PhoneIcon"
+          @click.stop="acceptIncomingCall"
       />
       <Button
-        variant="solid"
-        theme="red"
-        class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
-        :tooltip="__('Reject Call')"
-        :icon="PhoneIcon"
-        @click.stop="rejectIncomingCall"
+          variant="solid"
+          theme="red"
+          class="!h-6 !w-6 rounded-full rotate-[135deg] text-ink-white"
+          :tooltip="__('Reject Call')"
+          :icon="PhoneIcon"
+          @click.stop="rejectIncomingCall"
       />
     </div>
   </div>
   <NoteModal
-    v-model="showNoteModal"
-    :note="note"
-    doctype="CRM Call Log"
-    @after="updateNote"
+      v-model="showNoteModal"
+      :note="note"
+      doctype="CRM Call Log"
+      @after="updateNote"
   />
 </template>
 
@@ -180,14 +180,14 @@ import MinimizeIcon from '@/components/Icons/MinimizeIcon.vue'
 import PhoneIcon from '@/components/Icons/PhoneIcon.vue'
 import CountUpTimer from '@/components/CountUpTimer.vue'
 import NoteModal from '@/components/Modals/NoteModal.vue'
-import { Device } from '@twilio/voice-sdk'
-import { useDraggable, useWindowSize } from '@vueuse/core'
-import { useTelemetry } from 'frappe-ui/frappe'
-import { Avatar, call, createResource } from 'frappe-ui'
-import { ref, watch } from 'vue'
-import { showCallLogModal, callLogProps } from '@/composables/modals'
+import {Device} from '@twilio/voice-sdk'
+import {useDraggable, useWindowSize} from '@vueuse/core'
+import {useTelemetry} from 'frappe-ui/frappe'
+import {Avatar, call, createResource} from 'frappe-ui'
+import {ref, watch} from 'vue'
+import {showCallLogModal, callLogProps, callLogDataForModal} from '@/composables/modals'
 
-const { capture } = useTelemetry()
+const {capture} = useTelemetry()
 
 let device = ''
 let log = ref('Connecting...')
@@ -245,10 +245,10 @@ async function updateNote(_note, insert_mode = false) {
   }
 }
 
-const { width, height } = useWindowSize()
+const {width, height} = useWindowSize()
 
-let { style } = useDraggable(callPopup, {
-  initialValue: { x: width.value - 280, y: height.value - 310 },
+let {style} = useDraggable(callPopup, {
+  initialValue: {x: width.value - 280, y: height.value - 310},
   preventDefault: true,
 })
 
@@ -373,7 +373,7 @@ async function makeOutgoingCall(number) {
 
     try {
       _call = await device.connect({
-        params: { To: number },
+        params: {To: number},
       })
 
       showCallPopup.value = true
@@ -406,7 +406,7 @@ async function makeOutgoingCall(number) {
         const callSid = _call.parameters.CallSid
         if (callSid) {
           console.log('📞 Fetching call log:', callSid)
-          callLogResource.fetch({ name: callSid })
+          callLogResource.fetch({name: callSid})
         }
 
         calling.value = false
@@ -471,11 +471,9 @@ const callLogResource = createResource({
   url: 'crm.fcrm.doctype.crm_call_log.crm_call_log.get_call_log',
   onSuccess(data) {
     console.log('✅ Call log loaded:', data)
-    // Open the modal with the full data
-    callLogProps.value = {
-      data: data,  // Pass the full data object, not just { name: 'xxx' }
-      options: {}
-    }
+    // Set the data and open modal
+    callLogDataForModal.value = {name: data.name}
+    callLogProps.value = {options: {}}
     showCallLogModal.value = true
   },
   onError(err) {
@@ -484,14 +482,14 @@ const callLogResource = createResource({
 })
 
 watch(
-  () => log.value,
-  (value) => {
-    console.log(value)
-  },
-  { immediate: true },
+    () => log.value,
+    (value) => {
+      console.log(value)
+    },
+    {immediate: true},
 )
 
-defineExpose({ makeOutgoingCall, setup: startupClient })
+defineExpose({makeOutgoingCall, setup: startupClient})
 </script>
 
 <style scoped>

@@ -12,3 +12,4 @@ export const showChangePasswordModal = ref(false)
 
 export const showCallLogModal = ref(false)
 export const callLogProps = ref({})
+export const callLogDataForModal = ref(null)
