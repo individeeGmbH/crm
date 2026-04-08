@@ -34,7 +34,6 @@ import QuickEntryModal from '@/components/Modals/QuickEntryModal.vue'
 import AddressModal from '@/components/Modals/AddressModal.vue'
 import AboutModal from '@/components/Modals/AboutModal.vue'
 import CallLogModal from '@/components/Modals/CallLogModal.vue'
-import { globalStore } from '@/stores/global'
 import {
   showCreateDocumentModal,
   createDocumentDoctype,
@@ -51,22 +50,4 @@ import {
   showCallLogModal,
   callLogProps,
 } from '@/composables/modals'
-import { onMounted, onBeforeUnmount } from 'vue'
-
-const { $socket } = globalStore()
-
-onMounted(() => {
-  $socket.on('crm_call_ended', (data) => {
-    // Open the call log edit modal with the call log data
-    callLogProps.value = {
-      data: { name: data.call_log_name },
-      options: {}
-    }
-    showCallLogModal.value = true
-  })
-})
-
-onBeforeUnmount(() => {
-  $socket.off('crm_call_ended')
-})
 </script>

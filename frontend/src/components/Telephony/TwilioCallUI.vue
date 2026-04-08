@@ -185,6 +185,7 @@ import { useDraggable, useWindowSize } from '@vueuse/core'
 import { useTelemetry } from 'frappe-ui/frappe'
 import { Avatar, call, createResource } from 'frappe-ui'
 import { ref, watch } from 'vue'
+import { showCallLogModal, callLogProps } from '@/composables/modals'
 
 const { capture } = useTelemetry()
 
@@ -402,6 +403,15 @@ async function makeOutgoingCall(number) {
       })
       _call.on('disconnect', () => {
         log.value = `Call ended from makeOutgoing call disconnect.`
+        const callSid = _call.parameters.CallSid
+        if (callSid) {
+          callLogProps.value = {
+            data: { name: callSid },
+            options: {}
+          }
+          showCallLogModal.value = true
+        }
+
         calling.value = false
         onCall.value = false
         showCallPopup.value = false
