@@ -185,7 +185,7 @@ import {useDraggable, useWindowSize} from '@vueuse/core'
 import {useTelemetry} from 'frappe-ui/frappe'
 import {Avatar, call, createResource} from 'frappe-ui'
 import {ref, watch} from 'vue'
-import {showCallLogModal, callLogProps, callLogDataForModal} from '@/composables/modals'
+import { showPostCallSummaryModal, postCallSummaryData } from '@/composables/modals'
 
 const {capture} = useTelemetry()
 
@@ -471,14 +471,17 @@ const callLogResource = createResource({
   url: 'crm.fcrm.doctype.crm_call_log.crm_call_log.get_call_log',
   onSuccess(data) {
     console.log('✅ Call log loaded:', data)
-    // Set the data and open modal
-    callLogDataForModal.value = {name: data.name}
-    callLogProps.value = {options: {}}
-    showCallLogModal.value = true
+    postCallSummaryData.value = {
+      name: data.name,
+      contact: contact.value,
+      phoneNumber: phoneNumber.value,
+      duration: data.duration,
+    }
+    showPostCallSummaryModal.value = true
   },
   onError(err) {
     console.error('❌ Failed to load call log:', err)
-  }
+  },
 })
 
 watch(

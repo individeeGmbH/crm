@@ -27,6 +27,11 @@
       :data="callLogDataForModal"
       v-bind="callLogProps"
   />
+  <PostCallSummaryModal
+      v-if="showPostCallSummaryModal"
+      v-model="showPostCallSummaryModal"
+      :data="postCallSummaryData"
+  />
 </template>
 <script setup>
 import ChangePasswordModal from '@/components/Modals/ChangePasswordModal.vue'
@@ -35,6 +40,7 @@ import QuickEntryModal from '@/components/Modals/QuickEntryModal.vue'
 import AddressModal from '@/components/Modals/AddressModal.vue'
 import AboutModal from '@/components/Modals/AboutModal.vue'
 import CallLogModal from '@/components/Modals/CallLogModal.vue'
+import PostCallSummaryModal from '@/components/Modals/PostCallSummaryModal.vue'
 import {
   showCreateDocumentModal,
   createDocumentDoctype,
