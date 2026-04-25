@@ -81,6 +81,7 @@ const numberCharts = [
   { label: __('Rejected: Budget'), value: 'get_calls_rejected_budget' },
   { label: __('Rejected: Interest'), value: 'get_calls_rejected_interest' },
   { label: __('Rejected: Need'), value: 'get_calls_rejected_need' },
+  { label: __('Avg. Time to First Call'), value: 'avg_time_to_first_call' },
   { label: __('Ongoing Deals'), value: 'ongoing_deals' },
   { label: __('Avg Ongoing Deal Value'), value: 'average_ongoing_deal_value' },
   { label: __('Won Deals'), value: 'won_deals' },

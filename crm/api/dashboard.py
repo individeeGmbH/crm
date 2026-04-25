@@ -3,7 +3,7 @@ import json
 import frappe
 from frappe import _
 from frappe.query_builder import Case, DocType
-from frappe.query_builder.functions import Avg, Coalesce, Count, Date, DateFormat, IfNull, Sum
+from frappe.query_builder.functions import Avg, Coalesce, Count, Date, DateFormat, IfNull, Sum, Min
 from pypika.functions import Function
 
 from crm.fcrm.doctype.crm_dashboard.crm_dashboard import create_default_manager_dashboard
@@ -1318,6 +1318,7 @@ def get_converted_leads(from_date=None, to_date=None, user=None):
         "tooltip": _("Leads converted into deals in this period"),
         "value": current,
         "delta": delta,
+        "deltaSuffix": "%",
     }
 
 
@@ -1483,7 +1484,78 @@ def get_calls_for_rejection(title, tooltip, reason, from_date=None, to_date=None
         "tooltip": tooltip,
         "value": current,
         "delta": delta,
+        "deltaSuffix": "%",
     }
+
+def get_avg_time_to_first_call(from_date=None, to_date=None, user=None):
+    """
+    Average number of days between lead creation and the first call made to that lead.
+    The date range filters on when the first call happened.
+    """
+    if not from_date or not to_date:
+        from_date = frappe.utils.get_first_day(from_date or frappe.utils.nowdate())
+        to_date = frappe.utils.get_last_day(to_date or frappe.utils.nowdate())
+
+    diff = frappe.utils.date_diff(to_date, from_date)
+    if diff == 0:
+        diff = 1
+
+    prev_from_date = frappe.utils.add_days(from_date, -diff)
+
+    # The subquery finds the first call date per lead.
+    # We filter the outer query by when that first call happened.
+    user_filter = "AND cl.caller = %(user)s" if user else ""
+
+    sql = f"""
+        SELECT
+            AVG(CASE
+                WHEN DATE(fc.first_call_date) BETWEEN %(from_date)s AND %(to_date)s
+                THEN DATEDIFF(fc.first_call_date, l.creation)
+            END) AS current_avg,
+            AVG(CASE
+                WHEN DATE(fc.first_call_date) BETWEEN %(prev_from_date)s
+                     AND DATE_SUB(%(from_date)s, INTERVAL 1 DAY)
+                THEN DATEDIFF(fc.first_call_date, l.creation)
+            END) AS prev_avg
+        FROM (
+            SELECT
+                cl.reference_docname AS lead_name,
+                MIN(cl.creation)     AS first_call_date
+            FROM `tabCRM Call Log` cl
+            WHERE cl.reference_doctype = 'CRM Lead'
+              AND cl.reference_docname IS NOT NULL
+              AND cl.reference_docname != ''
+              {user_filter}
+            GROUP BY cl.reference_docname
+        ) fc
+        JOIN `tabCRM Lead` l ON l.name = fc.lead_name
+        WHERE DATE(fc.first_call_date) BETWEEN %(prev_from_date)s AND %(to_date)s
+    """
+
+    params = {
+        "from_date": from_date,
+        "to_date": to_date,
+        "prev_from_date": prev_from_date,
+    }
+    if user:
+        params["user"] = user
+
+    result = frappe.db.sql(sql, params, as_dict=True)
+
+    current_avg = round(result[0].current_avg or 0, 1)
+    prev_avg = round(result[0].prev_avg or 0, 1)
+    delta = current_avg - prev_avg if prev_avg else 0
+
+    return {
+        "title": _("Avg. Time to First Call"),
+        "tooltip": _("Average days between lead creation and first call"),
+        "value": current_avg,
+        "suffix": " days",
+        "delta": round(delta, 1),
+        "deltaSuffix": " days",
+        "negativeIsBetter": True,
+    }
+
 
 
 @frappe.whitelist()
