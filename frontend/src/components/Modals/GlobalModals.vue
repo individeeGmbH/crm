@@ -39,7 +39,6 @@ import CreateDocumentModal from '@/components/Modals/CreateDocumentModal.vue'
 import QuickEntryModal from '@/components/Modals/QuickEntryModal.vue'
 import AddressModal from '@/components/Modals/AddressModal.vue'
 import AboutModal from '@/components/Modals/AboutModal.vue'
-import CallLogModal from '@/components/Modals/CallLogModal.vue'
 import PostCallSummaryModal from '@/components/Modals/PostCallSummaryModal.vue'
 import {
   showCreateDocumentModal,
@@ -53,9 +52,6 @@ import {
   showAddressModal,
   addressProps,
   showAboutModal,
-  showChangePasswordModal,
-  showCallLogModal,
-  callLogProps,
-  callLogDataForModal,
+  showChangePasswordModal
 } from '@/composables/modals'
 </script>
