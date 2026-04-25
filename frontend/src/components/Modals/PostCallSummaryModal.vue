@@ -61,7 +61,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { Avatar, Badge, FormControl, ErrorMessage, createResource } from 'frappe-ui'
+import { Avatar, Badge, FormControl, ErrorMessage, call } from 'frappe-ui'
 
 const props = defineProps({
   data: { type: Object, default: null },
