@@ -21,12 +21,6 @@
       v-model="showChangePasswordModal"
   />
   <AboutModal v-model="showAboutModal" />
-  <CallLogModal
-      v-if="showCallLogModal"
-      v-model="showCallLogModal"
-      :data="callLogDataForModal"
-      v-bind="callLogProps"
-  />
   <PostCallSummaryModal
       v-if="showPostCallSummaryModal"
       v-model="showPostCallSummaryModal"
@@ -52,6 +46,8 @@ import {
   showAddressModal,
   addressProps,
   showAboutModal,
-  showChangePasswordModal
+  showChangePasswordModal,
+  showPostCallSummaryModal,
+  postCallSummaryData,
 } from '@/composables/modals'
 </script>
