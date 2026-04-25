@@ -28,6 +28,17 @@
             />
           </div>
         </div>
+        <div class="flex flex-col gap-1">
+          <label class="block text-sm font-medium text-ink-gray-7">
+            {{ __('Rejection Reason') }}
+          </label>
+          <Link
+              doctype="CRM Lost Reason"
+              :value="rejectionReason"
+              :placeholder="__('Select a reason...')"
+              @change="(v) => (rejectionReason = v)"
+          />
+        </div>
 
         <!-- Summary textarea -->
         <div class="flex flex-col gap-1">
@@ -42,17 +53,6 @@
           />
         </div>
         <ErrorMessage class="mt-3" :message="error"/>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="block text-sm font-medium text-ink-gray-7">
-          {{ __('Rejection Reason') }}
-        </label>
-        <Link
-            doctype="CRM Lost Reason"
-            :value="rejectionReason"
-            :placeholder="__('Select a reason...')"
-            @change="(v) => (rejectionReason = v)"
-        />
       </div>
 
       <div class="px-4 pt-4 pb-7 sm:px-6">
