@@ -92,7 +92,7 @@ async function saveSummary() {
     await call('frappe.client.set_value', {
       doctype: 'CRM Call Log',
       name: props.data.name,
-      fieldname: 'custom_summary',
+      fieldname: 'summary',
       value: summary.value,
     })
     show.value = false
