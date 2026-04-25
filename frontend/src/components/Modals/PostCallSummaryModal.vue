@@ -80,30 +80,26 @@ watch(show, (val) => {
   }
 })
 
-const saveResource = createResource({
-  url: 'frappe.client.set_value',
-  onSuccess() {
-    loading.value = false
-    show.value = false
-  },
-  onError(err) {
-    loading.value = false
-    error.value = err.messages?.[0] || err.message || __('Failed to save summary')
-  },
-})
-
-function saveSummary() {
+async function saveSummary() {
   if (!props.data?.name) {
     show.value = false
     return
   }
   loading.value = true
   error.value = null
-  saveResource.submit({
-    doctype: 'CRM Call Log',
-    name: props.data.name,
-    fieldname: 'custom_summary',
-    value: summary.value,
-  })
+  console.log(props.data.name)
+  try {
+    await call('frappe.client.set_value', {
+      doctype: 'CRM Call Log',
+      name: props.data.name,
+      fieldname: 'custom_summary',
+      value: summary.value,
+    })
+    show.value = false
+  } catch (err) {
+    error.value = err.messages?.[0] || err.message || __('Failed to save summary')
+  } finally {
+    loading.value = false
+  }
 }
 </script>
