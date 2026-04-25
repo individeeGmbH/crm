@@ -1428,12 +1428,12 @@ def get_calls_rejected_budget(from_date=None, to_date=None, user=None):
 
 def get_calls_rejected_interest(from_date=None, to_date=None, user=None):
     return get_calls_for_rejection(_("Rejected: Interest"), _("Calls rejected due to no interest in this period"),
-                                   "Not interested",
+                                   "Not Interested",
                                    from_date, to_date, user)
 
 
 def get_calls_rejected_need(from_date=None, to_date=None, user=None):
-    return get_calls_for_rejection(_("Rejected: Need"), _("Calls rejected due to no need in this period"), "No need",
+    return get_calls_for_rejection(_("Rejected: Need"), _("Calls rejected due to no need in this period"), "No Need",
                                    from_date, to_date, user)
 
 
