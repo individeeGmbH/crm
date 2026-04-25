@@ -272,8 +272,7 @@ function cancel() {
 }
 
 const saveDashboard = createResource({
-  url: 'frappe.client.set_value',
-  method: 'POST',
+  url: 'crm.api.dashboard.save_dashboard',
   onSuccess: () => {
     dashboardItems.reload()
     editing.value = false
@@ -288,10 +287,8 @@ function save() {
   })
 
   saveDashboard.submit({
-    doctype: 'CRM Dashboard',
-    name: props.dashboardName,
-    fieldname: 'layout',
-    value: JSON.stringify(dashboardItemsCopy),
+    dashboard_name: props.dashboardName,
+    layout: JSON.stringify(dashboardItemsCopy),
   })
 }
 

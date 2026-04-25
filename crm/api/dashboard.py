@@ -1212,7 +1212,7 @@ def get_total_calls(from_date=None, to_date=None, user=None):
 
 
 def get_completed_calls(from_date=None, to_date=None, user=None):
-    return get_calls(_("Total Calls"), _("Number of outgoing calls in the period"), from_date, to_date, user,
+    return get_calls(_("Completed Calls"), _("Number of completed calls in the period"), from_date, to_date, user,
                      "Completed", 5)
 
 
@@ -1484,3 +1484,22 @@ def get_calls_for_rejection(title, tooltip, reason, from_date=None, to_date=None
         "value": current,
         "delta": delta,
     }
+
+
+@frappe.whitelist()
+def save_dashboard(dashboard_name: str, layout: str):
+    """
+    Save dashboard layout — creates the CRM Dashboard document if it
+    doesn't exist yet, updates it if it does.
+    """
+    frappe.only_for(["System Manager", "Sales Manager"], True)
+
+    if frappe.db.exists("CRM Dashboard", dashboard_name):
+        frappe.db.set_value("CRM Dashboard", dashboard_name, "layout", layout)
+    else:
+        doc = frappe.new_doc("CRM Dashboard")
+        doc.title = dashboard_name
+        doc.layout = layout
+        doc.insert(ignore_permissions=True)
+
+    frappe.db.commit()
