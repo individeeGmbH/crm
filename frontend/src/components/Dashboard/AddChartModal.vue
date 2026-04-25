@@ -74,6 +74,13 @@ const chartTypes = [
 const numberChart = ref('')
 const numberCharts = [
   { label: __('Total Leads'), value: 'total_leads' },
+  { label: __('Total Calls'), value: 'total_calls' },
+  { label: __('Completed Calls'), value: 'completed_calls' },
+  { label: __('Converted Leads'), value: 'converted_leads' },
+  { label: __('Rejected: No Time'), value: 'get_calls_rejected_time' },
+  { label: __('Rejected: Budget'), value: 'get_calls_rejected_budget' },
+  { label: __('Rejected: Interest'), value: 'get_calls_rejected_interest' },
+  { label: __('Rejected: Need'), value: 'get_calls_rejected_need' },
   { label: __('Ongoing Deals'), value: 'ongoing_deals' },
   { label: __('Avg Ongoing Deal Value'), value: 'average_ongoing_deal_value' },
   { label: __('Won Deals'), value: 'won_deals' },
@@ -98,6 +105,8 @@ const axisCharts = [
   { label: __('Lost Deal Reasons'), value: 'lost_deal_reasons' },
   { label: __('Deals by Territory'), value: 'deals_by_territory' },
   { label: __('Deals by Salesperson'), value: 'deals_by_salesperson' },
+  { label: __('Calls by Campaign'), value: 'calls_by_campaign' },
+  { label: __('Conversions by Campaign'), value: 'conversions_by_campaign' },
 ]
 
 const donutChart = ref('deals_by_stage_donut')

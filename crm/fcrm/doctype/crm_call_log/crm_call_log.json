@@ -27,6 +27,8 @@
   "recording_url",
   "end_time",
   "note",
+  "summary",
+  "rejection_reason",
   "section_break_kebz",
   "links"
  ],
@@ -49,6 +51,12 @@
    "fieldname": "summary",
    "fieldtype": "Long Text",
    "label": "Summary"
+  },
+  {
+   "fieldname": "rejection_reason",
+   "fieldtype": "Link",
+   "label": "Rejection Reason",
+   "options": "CRM Lost Reason"
   },
   {
    "fieldname": "status",

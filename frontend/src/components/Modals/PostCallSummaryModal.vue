@@ -6,7 +6,7 @@
           <h3 class="text-2xl font-semibold leading-6 text-ink-gray-9">
             {{ __('Post-Call Summary') }}
           </h3>
-          <Button variant="ghost" class="w-7" icon="x" @click="show = false" />
+          <Button variant="ghost" class="w-7" icon="x" @click="show = false"/>
         </div>
 
         <!-- Contact info -->
@@ -41,12 +41,23 @@
               :rows="4"
           />
         </div>
-        <ErrorMessage class="mt-3" :message="error" />
+        <ErrorMessage class="mt-3" :message="error"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="block text-sm font-medium text-ink-gray-7">
+          {{ __('Rejection Reason') }}
+        </label>
+        <Link
+            doctype="CRM Lost Reason"
+            :value="rejectionReason"
+            :placeholder="__('Select a reason...')"
+            @change="(v) => (rejectionReason = v)"
+        />
       </div>
 
       <div class="px-4 pt-4 pb-7 sm:px-6">
         <div class="flex justify-end gap-2">
-          <Button :label="__('Skip')" @click="show = false" />
+          <Button :label="__('Skip')" @click="show = false"/>
           <Button
               variant="solid"
               :label="__('Save Summary')"
@@ -60,22 +71,24 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { Avatar, Badge, FormControl, ErrorMessage, call } from 'frappe-ui'
+import {ref, watch} from 'vue'
+import {Avatar, Badge, FormControl, ErrorMessage, call} from 'frappe-ui'
 
 const props = defineProps({
-  data: { type: Object, default: null },
+  data: {type: Object, default: null},
 })
 
-const show = defineModel({ type: Boolean })
+const show = defineModel({type: Boolean})
 
 const summary = ref('')
+const rejectionReason = ref('')
 const loading = ref(false)
 const error = ref(null)
 
 watch(show, (val) => {
   if (val) {
     summary.value = ''
+    rejectionReason.value = ''
     error.value = null
   }
 })
@@ -92,7 +105,10 @@ async function saveSummary() {
     await call('frappe.client.set_value', {
       doctype: 'CRM Call Log',
       name: props.data.name,
-      fieldname: 'summary',
+      fieldname: {
+        summary: summary.value,
+        rejection_reason: rejectionReason.value,
+      },
       value: summary.value,
     })
     show.value = false

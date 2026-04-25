@@ -1,69 +1,69 @@
 <template>
   <div
-    class="relative flex h-full flex-col justify-between transition-all duration-300 ease-in-out"
-    :class="isSidebarCollapsed ? 'w-12' : 'w-[220px]'"
+      class="relative flex h-full flex-col justify-between transition-all duration-300 ease-in-out"
+      :class="isSidebarCollapsed ? 'w-12' : 'w-[220px]'"
   >
     <div class="p-2">
-      <UserDropdown :isCollapsed="isSidebarCollapsed" />
+      <UserDropdown :isCollapsed="isSidebarCollapsed"/>
     </div>
     <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
         <SidebarLink
-          id="notifications-btn"
-          :label="__('Notifications')"
-          :icon="NotificationsIcon"
-          :isCollapsed="isSidebarCollapsed"
-          class="relative mx-2 my-[1.5px]"
-          @click="() => toggleNotificationPanel()"
+            id="notifications-btn"
+            :label="__('Notifications')"
+            :icon="NotificationsIcon"
+            :isCollapsed="isSidebarCollapsed"
+            class="relative mx-2 my-[1.5px]"
+            @click="() => toggleNotificationPanel()"
         >
           <template #right>
             <Badge
-              v-if="!isSidebarCollapsed && unreadNotificationsCount"
-              :label="unreadNotificationsCount"
-              variant="subtle"
+                v-if="!isSidebarCollapsed && unreadNotificationsCount"
+                :label="unreadNotificationsCount"
+                variant="subtle"
             />
             <div
-              v-else-if="unreadNotificationsCount"
-              class="absolute -left-1.5 top-1 z-20 h-[5px] w-[5px] translate-x-6 translate-y-1 rounded-full bg-surface-gray-6 ring-1 ring-white"
+                v-else-if="unreadNotificationsCount"
+                class="absolute -left-1.5 top-1 z-20 h-[5px] w-[5px] translate-x-6 translate-y-1 rounded-full bg-surface-gray-6 ring-1 ring-white"
             />
           </template>
         </SidebarLink>
       </div>
       <div v-for="view in allViews" :key="view.label">
-        <div class="mx-2 my-1.5" />
+        <div class="mx-2 my-1.5"/>
         <Section
-          :label="view.name"
-          :hideLabel="view.hideLabel"
-          :opened="view.opened"
+            :label="view.name"
+            :hideLabel="view.hideLabel"
+            :opened="view.opened"
         >
           <template #header="{ opened, hide, toggle }">
             <div
-              v-if="!hide"
-              class="flex items-center cursor-pointer gap-1.5 text-base text-ink-gray-5 transition-all duration-300 ease-in-out"
-              :class="
+                v-if="!hide"
+                class="flex items-center cursor-pointer gap-1.5 text-base text-ink-gray-5 transition-all duration-300 ease-in-out"
+                :class="
                 isSidebarCollapsed
                   ? 'h-0 overflow-hidden opacity-0'
                   : 'px-4 pt-[11px] pb-2.5 w-auto opacity-100'
               "
-              @click="toggle()"
+                @click="toggle()"
             >
               <FeatherIcon
-                name="chevron-right"
-                class="h-4 text-ink-gray-9 transition-all duration-300 ease-in-out"
-                :class="{ 'rotate-90': opened }"
+                  name="chevron-right"
+                  class="h-4 text-ink-gray-9 transition-all duration-300 ease-in-out"
+                  :class="{ 'rotate-90': opened }"
               />
               <span>{{ __(view.name) }}</span>
             </div>
           </template>
           <nav class="flex flex-col">
             <SidebarLink
-              v-for="link in view.views"
-              :key="link.label"
-              :icon="link.icon"
-              :label="__(link.label)"
-              :to="link.to"
-              :isCollapsed="isSidebarCollapsed"
-              class="mx-2 my-[1.5px]"
+                v-for="link in view.views"
+                :key="link.label"
+                :icon="link.icon"
+                :label="__(link.label)"
+                :to="link.to"
+                :isCollapsed="isSidebarCollapsed"
+                class="mx-2 my-[1.5px]"
             />
           </nav>
         </Section>
@@ -72,36 +72,36 @@
     <div class="m-2 flex flex-col gap-1">
       <div class="flex flex-col gap-2 mb-1">
         <SignupBanner
-          v-if="isDemoSite"
-          :isSidebarCollapsed="isSidebarCollapsed"
-          :afterSignup="() => capture('signup_from_demo_site')"
+            v-if="isDemoSite"
+            :isSidebarCollapsed="isSidebarCollapsed"
+            :afterSignup="() => capture('signup_from_demo_site')"
         />
         <TrialBanner
-          v-if="isFCSite"
-          :isSidebarCollapsed="isSidebarCollapsed"
-          :afterUpgrade="() => capture('upgrade_plan_from_trial_banner')"
+            v-if="isFCSite"
+            :isSidebarCollapsed="isSidebarCollapsed"
+            :afterUpgrade="() => capture('upgrade_plan_from_trial_banner')"
         />
         <GettingStartedBanner
-          v-if="!isOnboardingStepsCompleted"
-          :isSidebarCollapsed="isSidebarCollapsed"
+            v-if="!isOnboardingStepsCompleted"
+            :isSidebarCollapsed="isSidebarCollapsed"
         />
       </div>
       <SidebarLink
-        v-if="isManager() && isDemoDataCreated"
-        class="text-ink-red-3 hover:bg-surface-red-2 focus:bg-surface-red-2"
-        :label="__('Clear Demo Data')"
-        :isCollapsed="isSidebarCollapsed"
-        @click="() => clearDemoData()"
+          v-if="isManager() && isDemoDataCreated"
+          class="text-ink-red-3 hover:bg-surface-red-2 focus:bg-surface-red-2"
+          :label="__('Clear Demo Data')"
+          :isCollapsed="isSidebarCollapsed"
+          @click="() => clearDemoData()"
       >
         <template #icon>
-          <BrushCleaningIcon class="h-4 w-4" />
+          <BrushCleaningIcon class="h-4 w-4"/>
         </template>
       </SidebarLink>
       <SidebarLink
-        v-if="isOnboardingStepsCompleted"
-        :label="__('Help')"
-        :isCollapsed="isSidebarCollapsed"
-        @click="
+          v-if="isOnboardingStepsCompleted"
+          :label="__('Help')"
+          :isCollapsed="isSidebarCollapsed"
+          @click="
           () => {
             showHelpModal = minimize ? true : !showHelpModal
             minimize = !showHelpModal
@@ -109,41 +109,41 @@
         "
       >
         <template #icon>
-          <HelpIcon class="h-4 w-4" />
+          <HelpIcon class="h-4 w-4"/>
         </template>
       </SidebarLink>
       <SidebarLink
-        :label="isSidebarCollapsed ? __('Expand') : __('Collapse')"
-        :isCollapsed="isSidebarCollapsed"
-        class=""
-        @click="isSidebarCollapsed = !isSidebarCollapsed"
+          :label="isSidebarCollapsed ? __('Expand') : __('Collapse')"
+          :isCollapsed="isSidebarCollapsed"
+          class=""
+          @click="isSidebarCollapsed = !isSidebarCollapsed"
       >
         <template #icon>
           <span class="grid h-4 w-4 flex-shrink-0 place-items-center">
             <CollapseSidebar
-              class="h-4 w-4 text-ink-gray-7 duration-300 ease-in-out"
-              :class="{ '[transform:rotateY(180deg)]': isSidebarCollapsed }"
+                class="h-4 w-4 text-ink-gray-7 duration-300 ease-in-out"
+                :class="{ '[transform:rotateY(180deg)]': isSidebarCollapsed }"
             />
           </span>
         </template>
       </SidebarLink>
     </div>
-    <Notifications />
-    <Settings />
+    <Notifications/>
+    <Settings/>
     <HelpModal
-      v-if="showHelpModal"
-      v-model="showHelpModal"
-      v-model:articles="articles"
-      :logo="CRMLogo"
-      :afterSkip="(step) => capture('onboarding_step_skipped_' + step)"
-      :afterSkipAll="() => capture('onboarding_steps_skipped')"
-      :afterReset="(step) => capture('onboarding_step_reset_' + step)"
-      :afterResetAll="() => capture('onboarding_steps_reset')"
-      docsLink="https://docs.frappe.io/crm"
+        v-if="showHelpModal"
+        v-model="showHelpModal"
+        v-model:articles="articles"
+        :logo="CRMLogo"
+        :afterSkip="(step) => capture('onboarding_step_skipped_' + step)"
+        :afterSkipAll="() => capture('onboarding_steps_skipped')"
+        :afterReset="(step) => capture('onboarding_step_reset_' + step)"
+        :afterResetAll="() => capture('onboarding_steps_reset')"
+        docsLink="https://docs.frappe.io/crm"
     />
     <IntermediateStepModal
-      v-model="showIntermediateModal"
-      :currentStep="currentStep"
+        v-model="showIntermediateModal"
+        :currentStep="currentStep"
     />
   </div>
 </template>
@@ -174,16 +174,16 @@ import HelpIcon from '@/components/Icons/HelpIcon.vue'
 import SidebarLink from '@/components/SidebarLink.vue'
 import Notifications from '@/components/Notifications.vue'
 import Settings from '@/components/Settings/Settings.vue'
-import { viewsStore } from '@/stores/views'
+import {viewsStore} from '@/stores/views'
 import {
   unreadNotificationsCount,
   notificationsStore,
 } from '@/stores/notifications'
-import { usersStore } from '@/stores/users'
-import { sessionStore } from '@/stores/session'
-import { showSettings, activeSettingsPage } from '@/composables/settings'
-import { showChangePasswordModal } from '@/composables/modals'
-import { FeatherIcon, call } from 'frappe-ui'
+import {usersStore} from '@/stores/users'
+import {sessionStore} from '@/stores/session'
+import {showSettings, activeSettingsPage} from '@/composables/settings'
+import {showChangePasswordModal} from '@/composables/modals'
+import {FeatherIcon, call} from 'frappe-ui'
 import {
   SignupBanner,
   TrialBanner,
@@ -196,14 +196,14 @@ import {
   useTelemetry,
 } from 'frappe-ui/frappe'
 import router from '@/router'
-import { useStorage } from '@vueuse/core'
-import { useDemoData } from '@/composables/demoData'
-import { ref, reactive, computed, markRaw, onMounted } from 'vue'
+import {useStorage} from '@vueuse/core'
+import {useDemoData} from '@/composables/demoData'
+import {ref, reactive, computed, markRaw, onMounted} from 'vue'
 
-const { getPinnedViews, getPublicViews } = viewsStore()
-const { toggle: toggleNotificationPanel } = notificationsStore()
-const { capture } = useTelemetry()
-const { clearDemoData, isDemoDataCreated } = useDemoData()
+const {getPinnedViews, getPublicViews} = viewsStore()
+const {toggle: toggleNotificationPanel} = notificationsStore()
+const {capture} = useTelemetry()
+const {clearDemoData, isDemoDataCreated} = useDemoData()
 
 const isSidebarCollapsed = useStorage('isSidebarCollapsed', false)
 
@@ -212,9 +212,14 @@ const isDemoSite = ref(window.is_demo_site)
 
 const links = [
   {
-    label: 'Dashboard',
+    label: 'Opener Dashboard',
     icon: LucideLayoutDashboard,
-    to: 'Dashboard',
+    to: {name: 'Dashboard', params: {dashboardName: 'opener'}},
+  },
+  {
+    label: 'Deals Dashboard',
+    icon: LucideLayoutDashboard,
+    to: {name: 'Dashboard', params: {dashboardName: 'deals'}},
   },
   {
     label: 'Leads',
@@ -292,8 +297,8 @@ function parseView(views) {
       icon: getIcon(view.route_name, view.icon),
       to: {
         name: view.route_name,
-        params: { viewType: view.type || 'list' },
-        query: { view: view.name },
+        params: {viewType: view.type || 'list'},
+        query: {view: view.name},
       },
     }
   })
@@ -321,9 +326,9 @@ function getIcon(routeName, icon) {
 }
 
 // onboarding
-const { user } = sessionStore()
-const { users, isManager } = usersStore()
-const { isOnboardingStepsCompleted, setUp } = useOnboarding('frappecrm')
+const {user} = sessionStore()
+const {users, isManager} = usersStore()
+const {isOnboardingStepsCompleted, setUp} = useOnboarding('frappecrm')
 
 async function getFirstLead() {
   let firstLead = localStorage.getItem('firstLead' + user)
@@ -359,7 +364,7 @@ const steps = reactive([
     completed: false,
     onClick: () => {
       minimize.value = true
-      router.push({ name: 'Leads' })
+      router.push({name: 'Leads'})
       capture('onboarding_step_clicked_create_first_lead')
     },
   },
@@ -395,9 +400,9 @@ const steps = reactive([
 
           let lead = await getFirstLead()
           if (lead) {
-            router.push({ name: 'Lead', params: { leadId: lead } })
+            router.push({name: 'Lead', params: {leadId: lead}})
           } else {
-            router.push({ name: 'Leads' })
+            router.push({name: 'Leads'})
           }
         },
       }
@@ -417,11 +422,11 @@ const steps = reactive([
       if (deal) {
         router.push({
           name: 'Deal',
-          params: { dealId: deal },
+          params: {dealId: deal},
           hash: '#tasks',
         })
       } else {
-        router.push({ name: 'Tasks' })
+        router.push({name: 'Tasks'})
       }
     },
   },
@@ -438,11 +443,11 @@ const steps = reactive([
       if (deal) {
         router.push({
           name: 'Deal',
-          params: { dealId: deal },
+          params: {dealId: deal},
           hash: '#notes',
         })
       } else {
-        router.push({ name: 'Notes' })
+        router.push({name: 'Notes'})
       }
     },
   },
@@ -460,11 +465,11 @@ const steps = reactive([
       if (deal) {
         router.push({
           name: 'Deal',
-          params: { dealId: deal },
+          params: {dealId: deal},
           hash: '#comments',
         })
       } else {
-        router.push({ name: 'Leads' })
+        router.push({name: 'Leads'})
       }
     },
   },
@@ -482,11 +487,11 @@ const steps = reactive([
       if (deal) {
         router.push({
           name: 'Deal',
-          params: { dealId: deal },
+          params: {dealId: deal},
           hash: '#emails',
         })
       } else {
-        router.push({ name: 'Leads' })
+        router.push({name: 'Leads'})
       }
     },
   },
@@ -512,11 +517,11 @@ const steps = reactive([
           if (deal) {
             router.push({
               name: 'Deal',
-              params: { dealId: deal },
+              params: {dealId: deal},
               hash: '#activity',
             })
           } else {
-            router.push({ name: 'Leads' })
+            router.push({name: 'Leads'})
           }
         },
       }
@@ -544,86 +549,86 @@ const articles = ref([
     title: __('Introduction'),
     opened: false,
     subArticles: [
-      { name: 'introduction', title: __('Introduction') },
-      { name: 'setting-up', title: __('Setting Up') },
+      {name: 'introduction', title: __('Introduction')},
+      {name: 'setting-up', title: __('Setting Up')},
     ],
   },
   {
     title: __('Settings'),
     opened: false,
     subArticles: [
-      { name: 'profile', title: __('Profile') },
-      { name: 'custom-branding', title: __('Custom Branding') },
-      { name: 'home-actions', title: __('Home Actions') },
-      { name: 'invite-users', title: __('Invite Users') },
+      {name: 'profile', title: __('Profile')},
+      {name: 'custom-branding', title: __('Custom Branding')},
+      {name: 'home-actions', title: __('Home Actions')},
+      {name: 'invite-users', title: __('Invite Users')},
     ],
   },
   {
     title: __('Masters'),
     opened: false,
     subArticles: [
-      { name: 'lead', title: __('Lead') },
-      { name: 'deal', title: __('Deal') },
-      { name: 'contact', title: __('Contact') },
-      { name: 'organization', title: __('Organization') },
-      { name: 'note', title: __('Note') },
-      { name: 'task', title: __('Task') },
-      { name: 'call-log', title: __('Call Log') },
-      { name: 'email-template', title: __('Email Template') },
+      {name: 'lead', title: __('Lead')},
+      {name: 'deal', title: __('Deal')},
+      {name: 'contact', title: __('Contact')},
+      {name: 'organization', title: __('Organization')},
+      {name: 'note', title: __('Note')},
+      {name: 'task', title: __('Task')},
+      {name: 'call-log', title: __('Call Log')},
+      {name: 'email-template', title: __('Email Template')},
     ],
   },
   {
     title: __('Capturing Leads'),
     opened: false,
-    subArticles: [{ name: 'web-form', title: __('Web Form') }],
+    subArticles: [{name: 'web-form', title: __('Web Form')}],
   },
   {
     title: __('Views'),
     opened: false,
     subArticles: [
-      { name: 'view', title: __('Saved View') },
-      { name: 'public-view', title: __('Public View') },
-      { name: 'pinned-view', title: __('Pinned View') },
+      {name: 'view', title: __('Saved View')},
+      {name: 'public-view', title: __('Public View')},
+      {name: 'pinned-view', title: __('Pinned View')},
     ],
   },
   {
     title: __('Other Features'),
     opened: false,
     subArticles: [
-      { name: 'email-communication', title: __('Email Communication') },
-      { name: 'comment', title: __('Comment') },
-      { name: 'data', title: __('Data') },
-      { name: 'service-level-agreement', title: __('Service Level Agreement') },
-      { name: 'assignment-rule', title: __('Assignment Rule') },
-      { name: 'notification', title: __('Notification') },
+      {name: 'email-communication', title: __('Email Communication')},
+      {name: 'comment', title: __('Comment')},
+      {name: 'data', title: __('Data')},
+      {name: 'service-level-agreement', title: __('Service Level Agreement')},
+      {name: 'assignment-rule', title: __('Assignment Rule')},
+      {name: 'notification', title: __('Notification')},
     ],
   },
   {
     title: __('Customization'),
     opened: false,
     subArticles: [
-      { name: 'custom-fields', title: __('Custom Fields') },
-      { name: 'custom-actions', title: __('Custom Actions') },
-      { name: 'custom-statuses', title: __('Custom Statuses') },
-      { name: 'custom-list-actions', title: __('Custom List Actions') },
-      { name: 'quick-entry-layout', title: __('Quick Entry Layout') },
+      {name: 'custom-fields', title: __('Custom Fields')},
+      {name: 'custom-actions', title: __('Custom Actions')},
+      {name: 'custom-statuses', title: __('Custom Statuses')},
+      {name: 'custom-list-actions', title: __('Custom List Actions')},
+      {name: 'quick-entry-layout', title: __('Quick Entry Layout')},
     ],
   },
   {
     title: __('Integration'),
     opened: false,
     subArticles: [
-      { name: 'twilio', title: __('Twilio') },
-      { name: 'exotel', title: __('Exotel') },
-      { name: 'whatsapp', title: __('WhatsApp') },
-      { name: 'erpnext', title: __('ERPNext') },
+      {name: 'twilio', title: __('Twilio')},
+      {name: 'exotel', title: __('Exotel')},
+      {name: 'whatsapp', title: __('WhatsApp')},
+      {name: 'erpnext', title: __('ERPNext')},
     ],
   },
   {
     title: __('Frappe CRM mobile'),
     opened: false,
     subArticles: [
-      { name: 'mobile-app-installation', title: __('Mobile App Installation') },
+      {name: 'mobile-app-installation', title: __('Mobile App Installation')},
     ],
   },
 ])

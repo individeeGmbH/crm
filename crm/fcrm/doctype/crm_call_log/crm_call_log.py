@@ -30,6 +30,7 @@ class CRMCallLog(Document):
 		recording_url: DF.SmallText | None
 		reference_docname: DF.DynamicLink | None
 		reference_doctype: DF.Link | None
+		rejection_reason: DF.Link | None
 		start_time: DF.Datetime | None
 		status: DF.Literal[
 			"Initiated",

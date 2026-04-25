@@ -169,6 +169,8 @@ const filters = reactive({
   user: null,
 })
 
+const props = defineProps<{ dashboardName: string }>()
+
 const fromDate = computed(() => {
   if (!filters.period) return null
   return filters.period.split(',')[0]
@@ -242,6 +244,7 @@ const dashboardItems = createResource({
       from_date: fromDate.value,
       to_date: toDate.value,
       user: filters.user,
+      dashboard_name: props.dashboardName,
     }
   },
   auto: true,
@@ -286,7 +289,7 @@ function save() {
 
   saveDashboard.submit({
     doctype: 'CRM Dashboard',
-    name: 'Manager Dashboard',
+    name: props.dashboardName,
     fieldname: 'layout',
     value: JSON.stringify(dashboardItemsCopy),
   })
@@ -295,6 +298,7 @@ function save() {
 function resetToDefault() {
   createResource({
     url: 'crm.api.dashboard.reset_to_default',
+    params: { dashboard_name: props.dashboardName },
     auto: true,
     onSuccess: () => {
       dashboardItems.reload()

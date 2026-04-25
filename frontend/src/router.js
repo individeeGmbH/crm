@@ -14,9 +14,10 @@ const routes = [
     component: () => import('@/pages/MobileNotification.vue'),
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/:dashboardName',
     name: 'Dashboard',
     component: () => import('@/pages/Dashboard.vue'),
+    props: true,
   },
   {
     alias: '/leads',
