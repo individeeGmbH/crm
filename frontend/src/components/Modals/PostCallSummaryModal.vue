@@ -100,7 +100,6 @@ async function saveSummary() {
   }
   loading.value = true
   error.value = null
-  console.log(props.data.name)
   try {
     await call('frappe.client.set_value', {
       doctype: 'CRM Call Log',

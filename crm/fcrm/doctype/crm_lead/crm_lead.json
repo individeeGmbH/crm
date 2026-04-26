@@ -55,6 +55,7 @@
   "column_break_pweh",
   "first_response_time",
   "first_responded_on",
+  "last_contact_on",
   "section_break_xnpz",
   "rolling_responses",
   "section_break_kikl",
@@ -284,6 +285,11 @@
    "fieldtype": "Datetime",
    "label": "First Responded On",
    "read_only": 1
+  },
+  {
+   "fieldname": "last_contact_on",
+   "fieldtype": "Datetime",
+   "label": "Last Contact On"
   },
   {
    "default": "Open",

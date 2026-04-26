@@ -405,7 +405,6 @@ async function makeOutgoingCall(number) {
         log.value = `Call ended from makeOutgoing call disconnect.`
         const callSid = _call.parameters.CallSid
         if (callSid) {
-          console.log('📞 Fetching call log:', callSid)
           callLogResource.fetch({name: callSid})
         }
 
@@ -470,7 +469,6 @@ function toggleCallWindow() {
 const callLogResource = createResource({
   url: 'crm.fcrm.doctype.crm_call_log.crm_call_log.get_call_log',
   onSuccess(data) {
-    console.log('✅ Call log loaded:', data)
     postCallSummaryData.value = {
       name: data.name,
       contact: contact.value,

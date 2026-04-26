@@ -178,6 +178,10 @@ doc_events = {
 		"before_validate": ["crm.api.live_demo.validate_user"],
 		"validate_reset_password": ["crm.api.live_demo.validate_reset_password"],
 	},
+	"CRM Call Log": {
+		"after_insert": ["crm.fcrm.doctype.crm_lead.crm_lead.update_last_contacted_on_call"],
+		"on_update": ["crm.fcrm.doctype.crm_lead.crm_lead.update_last_contacted_on_call"],
+	},
 }
 
 # Scheduled Tasks
