@@ -1333,14 +1333,12 @@ def get_calls_by_campaign(from_date=None, to_date=None, user=None):
     query = (
         frappe.qb.from_(CallLog)
         .join(Lead)
-        .on(
-            (CallLog.reference_doctype == "CRM Lead")
-            & (CallLog.reference_docname == Lead.name)
-        )
+        .on(CallLog.reference_docname == Lead.name)
         .select(
-            Coalesce(Lead.custom_campaign, "No Campaign").as_("campaign"),
+            Lead.custom_campaign,
             Count("*").as_("calls"),
         )
+        .where(CallLog.reference_doctype == "CRM Lead")
         .where(Date(CallLog.creation).between(from_date, to_date))
         .groupby(Lead.custom_campaign)
         .orderby(Count("*"), order=frappe.qb.desc)
