@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import json
-
+import logging
 import frappe
 from frappe import _
 from frappe.desk.form.assign_to import add as assign
@@ -520,6 +520,7 @@ def convert_to_deal(
 
 def update_last_contacted_on_call(doc, method=None):
     logger = frappe.logger("crm", allow_site=True)
+    logger.setLevel(logging.DEBUG)
     logger.info(f"[last_contacted] hook fired — name={doc.name} status={doc.status} "
                 f"ref_doctype={doc.reference_doctype} ref_name={doc.reference_docname}")
 
