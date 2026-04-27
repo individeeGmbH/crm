@@ -544,6 +544,6 @@ def update_last_contacted_on_call(doc, method=None):
 
     lead = frappe.get_doc("CRM Lead", lead_name)
     lead.last_contact_on = frappe.utils.now_datetime()
-    if lead.status == "New":
-        lead.status = "Contacted"
+    if lead.status == "New" or lead.status == "Not Reached":
+        lead.status = "Reached"
     lead.save(ignore_permissions=True)
