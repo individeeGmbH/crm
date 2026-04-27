@@ -532,21 +532,12 @@ def update_last_contacted_on_call(doc, method=None):
         logger.info(f"[last_contacted] skipping — not linked to a CRM Lead")
         return
 
-    if not frappe.db.exists("CRM Lead", doc.reference_docname):
-        logger.info(f"[last_contacted] skipping — lead {doc.reference_docname} not found")
+    lead = frappe.get_doc("CRM Lead", doc.reference_docname)
+    if not lead:
         return
 
-    try:
-        frappe.db.set_value(
-            "CRM Lead",
-            doc.reference_docname,
-            "last_contacted",
-            frappe.utils.now_datetime(),
-            update_modified=False,
-        )
-        logger.info(f"[last_contacted] updated lead {doc.reference_docname}")
-    except Exception:
-        frappe.log_error(
-            title="[last_contacted] failed to update lead",
-            message=frappe.get_traceback(),
-        )
+    lead.last_contacted = frappe.utils.now_datetime()
+    if lead.status == "New":
+        lead.status = "Contacted"
+
+    lead.save(ignore_permissions=True)
