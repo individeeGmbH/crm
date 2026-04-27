@@ -1,78 +1,78 @@
 <template>
   <div
-    v-if="isMobileView"
-    class="flex flex-col justify-between gap-2 sm:px-5 px-3 py-4"
+      v-if="isMobileView"
+      class="flex flex-col justify-between gap-2 sm:px-5 px-3 py-4"
   >
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-2 overflow-x-auto">
         <div class="flex gap-2">
           <Filter
-            v-model="list"
-            :doctype="doctype"
-            :default_filters="filters"
-            @update="updateFilter"
+              v-model="list"
+              :doctype="doctype"
+              :default_filters="filters"
+              @update="updateFilter"
           />
           <GroupBy
-            v-if="route.params.viewType === 'group_by'"
-            v-model="list"
-            :doctype="doctype"
-            :hideLabel="isMobileView"
-            @update="updateGroupBy"
+              v-if="route.params.viewType === 'group_by'"
+              v-model="list"
+              :doctype="doctype"
+              :hideLabel="isMobileView"
+              @update="updateGroupBy"
           />
         </div>
 
         <div class="flex gap-2">
           <Button
-            :tooltip="__('Refresh')"
-            :icon="RefreshIcon"
-            :loading="isLoading"
-            @click="reload()"
+              :tooltip="__('Refresh')"
+              :icon="RefreshIcon"
+              :loading="isLoading"
+              @click="reload()"
           />
           <SortBy
-            v-if="route.params.viewType !== 'kanban'"
-            v-model="list"
-            :doctype="doctype"
-            :hideLabel="isMobileView"
-            @update="updateSort"
+              v-if="route.params.viewType !== 'kanban'"
+              v-model="list"
+              :doctype="doctype"
+              :hideLabel="isMobileView"
+              @update="updateSort"
           />
           <KanbanSettings
-            v-if="route.params.viewType === 'kanban'"
-            v-model="list"
-            :doctype="doctype"
-            @update="updateKanbanSettings"
+              v-if="route.params.viewType === 'kanban'"
+              v-model="list"
+              :doctype="doctype"
+              @update="updateKanbanSettings"
           />
           <ColumnSettings
-            v-else-if="!options.hideColumnsButton"
-            v-model="list"
-            :doctype="doctype"
-            :hideLabel="isMobileView"
-            @update="(isDefault) => updateColumns(isDefault)"
+              v-else-if="!options.hideColumnsButton"
+              v-model="list"
+              :doctype="doctype"
+              :hideLabel="isMobileView"
+              @update="(isDefault) => updateColumns(isDefault)"
           />
         </div>
       </div>
       <div
-        v-if="viewUpdated && route.query.view && (!view.public || isManager())"
-        class="flex flex-row-reverse items-center gap-2 border-r pr-2"
+          v-if="viewUpdated && route.query.view && (!view.public || isManager())"
+          class="flex flex-row-reverse items-center gap-2 border-r pr-2"
       >
-        <Button :label="__('Cancel')" @click="cancelChanges" />
-        <Button :label="__('Save Changes')" @click="saveView" />
+        <Button :label="__('Cancel')" @click="cancelChanges"/>
+        <Button :label="__('Save Changes')" @click="saveView"/>
       </div>
     </div>
   </div>
   <div
-    v-else-if="customizeQuickFilter"
-    class="flex items-center justify-between gap-2 p-5"
+      v-else-if="customizeQuickFilter"
+      class="flex items-center justify-between gap-2 p-5"
   >
     <div class="flex flex-1 items-center overflow-hidden pl-1 gap-2">
       <FadedScrollableDiv
-        class="flex overflow-x-auto -ml-1"
-        orientation="horizontal"
+          class="flex overflow-x-auto -ml-1"
+          orientation="horizontal"
       >
         <Draggable
-          class="flex w-full gap-2 items-center"
-          :list="newQuickFilters"
-          group="filters"
-          item-key="fieldname"
+            class="flex w-full gap-2 items-center"
+            :list="newQuickFilters"
+            group="filters"
+            item-key="fieldname"
         >
           <template #item="{ element: filter }">
             <div class="group whitespace-nowrap cursor-grab">
@@ -84,9 +84,9 @@
                 </template>
                 <template #suffix>
                   <FeatherIcon
-                    class="h-3.5 cursor-pointer group-hover:flex hidden"
-                    name="x"
-                    @click.stop="removeQuickFilter(filter)"
+                      class="h-3.5 cursor-pointer group-hover:flex hidden"
+                      name="x"
+                      @click.stop="removeQuickFilter(filter)"
                   />
                 </template>
               </Button>
@@ -96,17 +96,17 @@
       </FadedScrollableDiv>
       <div>
         <Autocomplete
-          value=""
-          :options="quickFilterOptions"
-          @change="(e) => addQuickFilter(e)"
+            value=""
+            :options="quickFilterOptions"
+            @change="(e) => addQuickFilter(e)"
         >
           <template #target="{ togglePopover }">
             <Button
-              class="whitespace-nowrap mr-2"
-              variant="ghost"
-              :label="__('Add Filter')"
-              iconLeft="plus"
-              @click="togglePopover()"
+                class="whitespace-nowrap mr-2"
+                variant="ghost"
+                :label="__('Add Filter')"
+                iconLeft="plus"
+                @click="togglePopover()"
             />
           </template>
           <template #item-label="{ option }">
@@ -119,82 +119,82 @@
         </Autocomplete>
       </div>
     </div>
-    <div class="-ml-2 h-[70%] border-l" />
+    <div class="-ml-2 h-[70%] border-l"/>
     <div class="flex gap-1">
       <Button
-        :label="__('Save')"
-        :loading="updateQuickFilters.loading"
-        @click="saveQuickFilters"
+          :label="__('Save')"
+          :loading="updateQuickFilters.loading"
+          @click="saveQuickFilters"
       />
-      <Button icon="x" @click="customizeQuickFilter = false" />
+      <Button icon="x" @click="customizeQuickFilter = false"/>
     </div>
   </div>
   <div v-else class="flex items-center justify-between gap-2 px-5 py-4">
     <FadedScrollableDiv
-      class="flex flex-1 items-center overflow-x-auto -ml-1 h-9"
-      orientation="horizontal"
+        class="flex flex-1 items-center overflow-x-auto -ml-1 h-9"
+        orientation="horizontal"
     >
       <div
-        v-for="filter in quickFilterList"
-        :key="filter.fieldname"
-        class="m-1 min-w-36"
+          v-for="filter in quickFilterList"
+          :key="filter.fieldname"
+          class="m-1 min-w-36"
       >
         <QuickFilterField
-          :filter="filter"
-          @applyQuickFilter="(f, v) => applyQuickFilter(f, v)"
+            :filter="filter"
+            @applyQuickFilter="(f, v) => applyQuickFilter(f, v)"
         />
       </div>
     </FadedScrollableDiv>
-    <div class="-ml-2 h-[70%] border-l" />
+    <div class="-ml-2 h-[70%] border-l"/>
     <div class="flex items-center gap-2">
       <div
-        v-if="viewUpdated && route.query.view && (!view.public || isManager())"
-        class="flex items-center gap-2 border-r pr-2"
+          v-if="viewUpdated && route.query.view && (!view.public || isManager())"
+          class="flex items-center gap-2 border-r pr-2"
       >
-        <Button :label="__('Cancel')" @click="cancelChanges" />
-        <Button :label="__('Save Changes')" @click="saveView" />
+        <Button :label="__('Cancel')" @click="cancelChanges"/>
+        <Button :label="__('Save Changes')" @click="saveView"/>
       </div>
       <div class="flex items-center gap-2">
         <Button
-          :tooltip="__('Refresh')"
-          :icon="RefreshIcon"
-          :loading="isLoading"
-          @click="reload()"
+            :tooltip="__('Refresh')"
+            :icon="RefreshIcon"
+            :loading="isLoading"
+            @click="reload()"
         />
         <GroupBy
-          v-if="route.params.viewType === 'group_by'"
-          v-model="list"
-          :doctype="doctype"
-          @update="updateGroupBy"
+            v-if="route.params.viewType === 'group_by'"
+            v-model="list"
+            :doctype="doctype"
+            @update="updateGroupBy"
         />
         <Filter
-          v-model="list"
-          :doctype="doctype"
-          :default_filters="filters"
-          @update="updateFilter"
+            v-model="list"
+            :doctype="doctype"
+            :default_filters="filters"
+            @update="updateFilter"
         />
         <SortBy
-          v-if="route.params.viewType !== 'kanban'"
-          v-model="list"
-          :doctype="doctype"
-          @update="updateSort"
+            v-if="route.params.viewType !== 'kanban'"
+            v-model="list"
+            :doctype="doctype"
+            @update="updateSort"
         />
         <KanbanSettings
-          v-if="route.params.viewType === 'kanban'"
-          v-model="list"
-          :doctype="doctype"
-          @update="updateKanbanSettings"
+            v-if="route.params.viewType === 'kanban'"
+            v-model="list"
+            :doctype="doctype"
+            @update="updateKanbanSettings"
         />
         <ColumnSettings
-          v-else-if="!options.hideColumnsButton"
-          v-model="list"
-          :doctype="doctype"
-          @update="(isDefault) => updateColumns(isDefault)"
+            v-else-if="!options.hideColumnsButton"
+            v-model="list"
+            :doctype="doctype"
+            @update="(isDefault) => updateColumns(isDefault)"
         />
         <Dropdown
-          v-if="route.params.viewType !== 'kanban' || isManager()"
-          placement="right"
-          :options="[
+            v-if="route.params.viewType !== 'kanban' || isManager()"
+            placement="right"
+            :options="[
             {
               group: __('Options'),
               hideLabel: true,
@@ -230,17 +230,17 @@
           ]"
         >
           <template #default>
-            <Button :tooltip="__('More Options')" icon="more-horizontal" />
+            <Button :tooltip="__('More Options')" icon="more-horizontal"/>
           </template>
         </Dropdown>
       </div>
     </div>
   </div>
   <ViewModal
-    v-model="showViewModal"
-    v-model:view="viewModalObj"
-    :doctype="doctype"
-    :options="{
+      v-model="showViewModal"
+      v-model:view="viewModalObj"
+      :doctype="doctype"
+      :options="{
       afterCreate: async (v) => {
         await reloadView()
         viewUpdated = false
@@ -258,8 +258,8 @@
     }"
   />
   <Dialog
-    v-model="showExportDialog"
-    :options="{
+      v-model="showExportDialog"
+      :options="{
       title: __('Export'),
       actions: [
         {
@@ -272,11 +272,11 @@
   >
     <template #body-content>
       <FormControl
-        v-model="export_type"
-        variant="outline"
-        :label="__('Export Type')"
-        type="select"
-        :options="[
+          v-model="export_type"
+          variant="outline"
+          :label="__('Export Type')"
+          type="select"
+          :options="[
           {
             label: __('Excel'),
             value: 'Excel',
@@ -286,13 +286,13 @@
             value: 'CSV',
           },
         ]"
-        :placeholder="__('Excel')"
+          :placeholder="__('Excel')"
       />
       <div class="mt-3">
         <FormControl
-          v-model="export_all"
-          type="checkbox"
-          :label="__('Export all {0} record(s)', [list.data.total_count])"
+            v-model="export_all"
+            type="checkbox"
+            :label="__('Export all {0} record(s)', [list.data.total_count])"
         />
       </div>
     </template>
@@ -319,12 +319,12 @@ import GroupBy from '@/components/GroupBy.vue'
 import FadedScrollableDiv from '@/components/FadedScrollableDiv.vue'
 import ColumnSettings from '@/components/ColumnSettings.vue'
 import KanbanSettings from '@/components/Kanban/KanbanSettings.vue'
-import { getSettings } from '@/stores/settings'
-import { globalStore } from '@/stores/global'
-import { viewsStore } from '@/stores/views'
-import { usersStore } from '@/stores/users'
-import { getMeta } from '@/stores/meta'
-import { isEmoji } from '@/utils'
+import {getSettings} from '@/stores/settings'
+import {globalStore} from '@/stores/global'
+import {viewsStore} from '@/stores/views'
+import {usersStore} from '@/stores/users'
+import {getMeta} from '@/stores/meta'
+import {isEmoji} from '@/utils'
 import {
   Tooltip,
   createResource,
@@ -334,17 +334,17 @@ import {
   FeatherIcon,
   usePageMeta,
 } from 'frappe-ui'
-import { computed, ref, onMounted, watch, h, markRaw } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useDebounceFn } from '@vueuse/core'
-import { isMobileView } from '@/composables/settings'
+import {computed, ref, onMounted, watch, h, markRaw} from 'vue'
+import {useRouter, useRoute} from 'vue-router'
+import {useDebounceFn} from '@vueuse/core'
+import {isMobileView} from '@/composables/settings'
 import Draggable from 'vuedraggable'
 import _ from 'lodash'
 import ImportIcon from '~icons/lucide/import'
 
 const props = defineProps({
-  doctype: { type: String, required: true },
-  filters: { type: Object, default: () => ({}) },
+  doctype: {type: String, required: true},
+  filters: {type: Object, default: () => ({})},
   options: {
     type: Object,
     default: () => ({
@@ -355,15 +355,15 @@ const props = defineProps({
   },
 })
 
-const { brand } = getSettings()
-const { $dialog } = globalStore()
-const { reload: reloadView, getDefaultView, getView } = viewsStore()
-const { isManager } = usersStore()
+const {brand} = getSettings()
+const {$dialog} = globalStore()
+const {reload: reloadView, getDefaultView, getView} = viewsStore()
+const {isManager} = usersStore()
 
-const list = defineModel({ type: Object, default: () => ({}) })
-const loadMore = defineModel('loadMore', { type: Boolean })
-const resizeColumn = defineModel('resizeColumn', { type: Boolean })
-const updatedPageCount = defineModel('updatedPageCount', { type: Boolean })
+const list = defineModel({type: Object, default: () => ({})})
+const loadMore = defineModel('loadMore', {type: Boolean})
+const resizeColumn = defineModel('resizeColumn', {type: Boolean})
+const updatedPageCount = defineModel('updatedPageCount', {type: Boolean})
 
 const route = useRoute()
 const router = useRouter()
@@ -401,7 +401,7 @@ const currentView = computed(() => {
   return {
     name: _view?.name || getViewType().name,
     label:
-      _view?.label || props.options?.defaultViewName || getViewType().label,
+        _view?.label || props.options?.defaultViewName || getViewType().label,
     icon: _view?.icon || getViewType().icon,
     is_standard: !_view || _view.is_standard,
   }
@@ -597,7 +597,7 @@ if (allowedViews.includes('list')) {
     icon: markRaw(ListIcon),
     onClick() {
       viewUpdated.value = false
-      router.push({ name: route.name, params: { viewType: 'list' } })
+      router.push({name: route.name, params: {viewType: 'list'}})
     },
   })
 }
@@ -608,7 +608,7 @@ if (allowedViews.includes('kanban')) {
     icon: markRaw(KanbanIcon),
     onClick() {
       viewUpdated.value = false
-      router.push({ name: route.name, params: { viewType: 'kanban' } })
+      router.push({name: route.name, params: {viewType: 'kanban'}})
     },
   })
 }
@@ -619,7 +619,7 @@ if (allowedViews.includes('group_by')) {
     icon: markRaw(GroupByIcon),
     onClick() {
       viewUpdated.value = false
-      router.push({ name: route.name, params: { viewType: 'group_by' } })
+      router.push({name: route.name, params: {viewType: 'group_by'}})
     },
   })
 }
@@ -650,21 +650,21 @@ const viewsDropdownOptions = computed(() => {
       view.type = view.type || 'list'
       view.icon = getIcon(view.icon, view.type)
       view.filters =
-        typeof view.filters == 'string'
-          ? JSON.parse(view.filters)
-          : view.filters
+          typeof view.filters == 'string'
+              ? JSON.parse(view.filters)
+              : view.filters
       view.onClick = () => {
         viewUpdated.value = false
         router.push({
           name: route.name,
-          params: { viewType: view.type },
-          query: { view: view.name },
+          params: {viewType: view.type},
+          query: {view: view.name},
         })
       }
     })
     let publicViews = list.value.data.views.filter((v) => v.public)
     let savedViews = list.value.data.views.filter(
-      (v) => !v.pinned && !v.public && !v.is_standard,
+        (v) => !v.pinned && !v.public && !v.is_standard,
     )
     let pinnedViews = list.value.data.views.filter((v) => v.pinned)
 
@@ -703,7 +703,7 @@ const viewsDropdownOptions = computed(() => {
   return _views
 })
 
-const { getFields } = getMeta(props.doctype)
+const {getFields} = getMeta(props.doctype)
 
 const customizeQuickFilter = ref(false)
 
@@ -726,7 +726,7 @@ function addQuickFilter(f) {
 
 function removeQuickFilter(f) {
   newQuickFilters.value = newQuickFilters.value.filter(
-    (filter) => filter.fieldname !== f.fieldname,
+      (filter) => filter.fieldname !== f.fieldname,
   )
 }
 
@@ -735,7 +735,7 @@ const updateQuickFilters = createResource({
   onSuccess() {
     customizeQuickFilter.value = false
 
-    quickFilters.update({ params: { doctype: props.doctype, cached: false } })
+    quickFilters.update({params: {doctype: props.doctype, view_name: route.query.view || null, cached: false}})
     quickFilters.reload()
     toast.success(__('Quick filters updated successfully'))
   },
@@ -743,7 +743,7 @@ const updateQuickFilters = createResource({
 
 function saveQuickFilters() {
   let new_filters =
-    newQuickFilters.value?.map((filter) => filter.fieldname) || []
+      newQuickFilters.value?.map((filter) => filter.fieldname) || []
   let old_filters = quickFilters.data?.map((filter) => filter.fieldname) || []
 
   updateQuickFilters.update({
@@ -751,6 +751,7 @@ function saveQuickFilters() {
       quick_filters: JSON.stringify(new_filters),
       old_filters: JSON.stringify(old_filters),
       doctype: props.doctype,
+      view_name: route.query.view || null
     },
   })
 
@@ -763,13 +764,13 @@ const quickFilterOptions = computed(() => {
 
   let existingQuickFilters = newQuickFilters.value.map((f) => f.fieldname)
   let options = fields
-    .filter((f) => f.label)
-    .filter((f) => !existingQuickFilters.includes(f.fieldname))
-    .map((field) => ({
-      label: field.label,
-      value: field.fieldname,
-      fieldtype: field.fieldtype,
-    }))
+      .filter((f) => f.label)
+      .filter((f) => !existingQuickFilters.includes(f.fieldname))
+      .map((field) => ({
+        label: field.label,
+        value: field.fieldname,
+        fieldtype: field.fieldtype,
+      }))
 
   if (!options.some((f) => f.fieldname === 'name')) {
     options.push({
@@ -791,11 +792,11 @@ const quickFilterList = computed(() => {
       let value = list.value.params.filters[filter.fieldname]
       if (Array.isArray(value)) {
         if (
-          (['Check', 'Select', 'Link', 'Date', 'Datetime'].includes(
-            filter.fieldtype,
-          ) &&
-            value[0]?.toLowerCase() == 'like') ||
-          value[0]?.toLowerCase() != 'like'
+            (['Check', 'Select', 'Link', 'Date', 'Datetime'].includes(
+                    filter.fieldtype,
+                ) &&
+                value[0]?.toLowerCase() == 'like') ||
+            value[0]?.toLowerCase() != 'like'
         )
           return
         filter['value'] = value[1]?.replace(/%/g, '')
@@ -812,8 +813,8 @@ const quickFilterList = computed(() => {
 
 const quickFilters = createResource({
   url: 'crm.api.doc.get_quick_filters',
-  params: { doctype: props.doctype },
-  cache: ['Quick Filters', props.doctype],
+  params: {doctype: props.doctype, view_name: route.query.view || null},
+  cache: ['Quick Filters', props.doctype, route.query.view || null],
   onSuccess(filters) {
     setupNewQuickFilters(filters)
   },
@@ -830,11 +831,11 @@ function setupNewQuickFilters(filters) {
 }
 
 function applyQuickFilter(filter, value) {
-  let filters = { ...list.value.params.filters }
+  let filters = {...list.value.params.filters}
   let field = filter.fieldname
   if (value) {
     if (
-      ['Check', 'Select', 'Link', 'Date', 'Datetime'].includes(filter.fieldtype)
+        ['Check', 'Select', 'Link', 'Date', 'Datetime'].includes(filter.fieldtype)
     ) {
       filters[field] = value
     } else {
@@ -906,8 +907,8 @@ function updateColumns(obj) {
     defaultParams.value = getParams()
   }
   defaultParams.value.columns = view.value.columns = obj.isDefault
-    ? ''
-    : obj.columns
+      ? ''
+      : obj.columns
   defaultParams.value.rows = view.value.rows = obj.isDefault ? '' : obj.rows
   view.value.load_default_columns = obj.isDefault
 
@@ -998,10 +999,10 @@ function createOrUpdateStandardView() {
   if (route.query.view) return
   view.value.doctype = props.doctype
   call(
-    'crm.fcrm.doctype.crm_view_settings.crm_view_settings.create_or_update_standard_view',
-    {
-      view: view.value,
-    },
+      'crm.fcrm.doctype.crm_view_settings.crm_view_settings.create_or_update_standard_view',
+      {
+        view: view.value,
+      },
   ).then(() => {
     reloadView()
     view.value = {
@@ -1035,8 +1036,8 @@ function updatePageLength(value, loadMore = false) {
     list.value.params.page_length += list.value.params.page_length_count
   } else {
     if (
-      value == list.value.params.page_length &&
-      value == list.value.params.page_length_count
+        value == list.value.params.page_length &&
+        value == list.value.params.page_length_count
     )
       return
     list.value.params.page_length = value
@@ -1069,7 +1070,7 @@ const viewActions = (view, close) => {
       items: [
         {
           label: __('Duplicate'),
-          icon: () => h(DuplicateIcon, { class: 'h-4 w-4' }),
+          icon: () => h(DuplicateIcon, {class: 'h-4 w-4'}),
           onClick: () => duplicateView(_view, close),
         },
       ],
@@ -1079,7 +1080,7 @@ const viewActions = (view, close) => {
   if (isStandard && !isDefaultView(_view)) {
     actions[0].items.unshift({
       label: __('Set As Default'),
-      icon: () => h(CheckIcon, { class: 'h-4 w-4' }),
+      icon: () => h(CheckIcon, {class: 'h-4 w-4'}),
       onClick: () => setAsDefault(_view),
     })
   }
@@ -1087,14 +1088,14 @@ const viewActions = (view, close) => {
   if (!isStandard && (!_view.public || isManager())) {
     actions[0].items.push({
       label: __('Edit'),
-      icon: () => h(EditIcon, { class: 'h-4 w-4' }),
+      icon: () => h(EditIcon, {class: 'h-4 w-4'}),
       onClick: () => editView(_view, close),
     })
 
     if (!_view.public) {
       actions[0].items.push({
         label: _view.pinned ? __('Unpin View') : __('Pin View'),
-        icon: () => h(_view.pinned ? UnpinIcon : PinIcon, { class: 'h-4 w-4' }),
+        icon: () => h(_view.pinned ? UnpinIcon : PinIcon, {class: 'h-4 w-4'}),
         onClick: () => pinView(_view),
       })
     }
@@ -1103,10 +1104,10 @@ const viewActions = (view, close) => {
       actions[0].items.push({
         label: _view.public ? __('Make Private') : __('Make Public'),
         icon: () =>
-          h(FeatherIcon, {
-            name: _view.public ? 'lock' : 'unlock',
-            class: 'h-4 w-4',
-          }),
+            h(FeatherIcon, {
+              name: _view.public ? 'lock' : 'unlock',
+              class: 'h-4 w-4',
+            }),
         onClick: () => publicView(_view),
       })
     }
@@ -1119,21 +1120,21 @@ const viewActions = (view, close) => {
           label: __('Delete'),
           icon: 'trash-2',
           onClick: () =>
-            $dialog({
-              title: __('Delete View'),
-              message: __('Are you sure you want to delete "{0}" view?', [
-                _view.label,
-              ]),
-              variant: 'danger',
-              actions: [
-                {
-                  label: __('Delete'),
-                  variant: 'solid',
-                  theme: 'red',
-                  onClick: (close) => deleteView(_view, close),
-                },
-              ],
-            }),
+              $dialog({
+                title: __('Delete View'),
+                message: __('Are you sure you want to delete "{0}" view?', [
+                  _view.label,
+                ]),
+                variant: 'danger',
+                actions: [
+                  {
+                    label: __('Delete'),
+                    variant: 'solid',
+                    theme: 'red',
+                    onClick: (close) => deleteView(_view, close),
+                  },
+                ],
+              }),
         },
       ],
     })
@@ -1212,7 +1213,7 @@ function deleteView(v, close) {
   call('crm.fcrm.doctype.crm_view_settings.crm_view_settings.delete', {
     name: v.name,
   }).then(() => {
-    router.push({ name: route.name, params: { viewType: 'list' } })
+    router.push({name: route.name, params: {viewType: 'list'}})
     reloadView()
     list.value.reload()
   })
@@ -1221,10 +1222,10 @@ function deleteView(v, close) {
 
 function fetchAndUpdateKanbanColumns(v) {
   call(
-    'crm.fcrm.doctype.crm_view_settings.crm_view_settings.fetch_and_update_kanban_columns',
-    {
-      name: v.name,
-    },
+      'crm.fcrm.doctype.crm_view_settings.crm_view_settings.fetch_and_update_kanban_columns',
+      {
+        name: v.name,
+      },
   ).then((columns) => {
     list.value.params.kanban_columns = columns
     view.value.kanban_columns = columns
@@ -1260,7 +1261,7 @@ function saveView() {
   showViewModal.value = true
 }
 
-function applyFilter({ event, idx, column, item, firstColumn }) {
+function applyFilter({event, idx, column, item, firstColumn}) {
   let restrictedFieldtypes = ['Datetime', 'Time']
   if (restrictedFieldtypes.includes(column.type) || idx === 0) return
   if (idx === 1 && firstColumn.key == '_liked_by') return
@@ -1268,7 +1269,7 @@ function applyFilter({ event, idx, column, item, firstColumn }) {
   event.stopPropagation()
   event.preventDefault()
 
-  let filters = { ...list.value.params.filters }
+  let filters = {...list.value.params.filters}
 
   let value = item.name ?? item.label ?? item
 
@@ -1293,7 +1294,7 @@ function applyFilter({ event, idx, column, item, firstColumn }) {
 }
 
 function applyLikeFilter() {
-  let filters = { ...list.value.params.filters }
+  let filters = {...list.value.params.filters}
   if (!filters._liked_by) {
     filters['_liked_by'] = ['LIKE', '%@me%']
   } else {
@@ -1302,10 +1303,10 @@ function applyLikeFilter() {
   updateFilter(filters)
 }
 
-function likeDoc({ name, liked }) {
+function likeDoc({name, liked}) {
   createResource({
     url: 'frappe.desk.like.toggle_like',
-    params: { doctype: props.doctype, name: name, add: liked ? 'No' : 'Yes' },
+    params: {doctype: props.doctype, name: name, add: liked ? 'No' : 'Yes'},
     auto: true,
     onSuccess: () => reload(),
   })
@@ -1326,16 +1327,24 @@ defineExpose({
 
 // Watchers
 watch(
-  () => getView(route.query.view, route.params.viewType, props.doctype),
-  (value, old_value) => {
-    if (_.isEqual(value, old_value)) return
-    reload()
-  },
-  { deep: true },
+    () => getView(route.query.view, route.params.viewType, props.doctype),
+    (value, old_value) => {
+      if (_.isEqual(value, old_value)) return
+      reload()
+    },
+    {deep: true},
 )
 
 watch([() => route, () => route.params.viewType], (value, old_value) => {
   if (value[0] === old_value[0] && value[1] === value[0]) return
   reload()
 })
+
+watch(
+    () => route.query.view,
+    (view_name) => {
+      quickFilters.update({ params: { doctype: props.doctype, view_name: view_name || null } })
+      quickFilters.reload()
+    },
+)
 </script>

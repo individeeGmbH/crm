@@ -9,6 +9,8 @@ def get_views(doctype: str):
 		frappe.qb.from_(View)
 		.select("*")
 		.where(Criterion.any([View.user == "", View.user == frappe.session.user]))
+		.orderby(View.position)
+		.orderby(View.label)
 	)
 	if doctype:
 		query = query.where(View.dt == doctype)

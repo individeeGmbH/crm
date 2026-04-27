@@ -16,6 +16,8 @@
   "route_name",
   "pinned",
   "public",
+  "position",
+  "quick_filters",
   "filters_tab",
   "filters",
   "order_by_tab",
@@ -112,6 +114,17 @@
    "fieldname": "public",
    "fieldtype": "Check",
    "label": "Public"
+  },
+  {
+   "default": "0",
+   "fieldname": "position",
+   "fieldtype": "Int",
+   "label": "Position"
+  },
+  {
+   "fieldname": "quick_filters",
+   "fieldtype": "JSON",
+   "label": "Quick Filters"
   },
   {
    "fieldname": "icon",
