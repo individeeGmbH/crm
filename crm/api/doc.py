@@ -319,6 +319,21 @@ def get_data(
 		elif value == "@me":
 			filters[key] = frappe.session.user
 
+	for key in filters:
+		value = filters[key]
+		if isinstance(value, list) and len(value) == 2:
+			operator, val = value
+			if str(operator).lower() == 'timespan' and val == 'last 5 days':
+				since = frappe.utils.add_to_date(
+					frappe.utils.now_datetime(), days=-5
+				)
+				filters[key] = ['>=', since]
+			if str(operator).lower() == 'timespan' and val == 'last 30 days':
+				since = frappe.utils.add_to_date(
+					frappe.utils.now_datetime(), days=-30
+				)
+				filters[key] = ['>=', since]
+
 	if default_filters:
 		default_filters = frappe.parse_json(default_filters)
 		filters.update(default_filters)

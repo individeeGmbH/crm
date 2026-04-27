@@ -519,21 +519,33 @@ def convert_to_deal(
 
 
 def update_last_contacted_on_call(doc, method=None):
-    """
-    Called via doc_events on CRM Call Log on_update.
-    Updates last_contacted on the linked CRM Lead when a call is completed.
-    """
+    logger = frappe.logger("crm", allow_site=True)
+    logger.info(f"[last_contacted] hook fired — name={doc.name} status={doc.status} "
+                f"ref_doctype={doc.reference_doctype} ref_name={doc.reference_docname}")
+
     if doc.status != "Completed":
-        return
-    if doc.reference_doctype != "CRM Lead" or not doc.reference_docname:
-        return
-    if not frappe.db.exists("CRM Lead", doc.reference_docname):
+        logger.info(f"[last_contacted] skipping — status is not Completed")
         return
 
-    frappe.db.set_value(
-        "CRM Lead",
-        doc.reference_docname,
-        "last_contacted",
-        frappe.utils.now_datetime(),
-        update_modified=False,
-    )
+    if doc.reference_doctype != "CRM Lead" or not doc.reference_docname:
+        logger.info(f"[last_contacted] skipping — not linked to a CRM Lead")
+        return
+
+    if not frappe.db.exists("CRM Lead", doc.reference_docname):
+        logger.info(f"[last_contacted] skipping — lead {doc.reference_docname} not found")
+        return
+
+    try:
+        frappe.db.set_value(
+            "CRM Lead",
+            doc.reference_docname,
+            "last_contacted",
+            frappe.utils.now_datetime(),
+            update_modified=False,
+        )
+        logger.info(f"[last_contacted] updated lead {doc.reference_docname}")
+    except Exception:
+        frappe.log_error(
+            title="[last_contacted] failed to update lead",
+            message=frappe.get_traceback(),
+        )

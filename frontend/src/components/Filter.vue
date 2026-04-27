@@ -666,6 +666,14 @@ const timespanOptions = [
     value: 'last year',
   },
   {
+    label: __('Last 5 days'),
+    value: 'last 5 days',
+  },
+  {
+    label: __('Last 30 days'),
+    value: 'last 30 days',
+  },
+  {
     label: __('Yesterday'),
     value: 'yesterday',
   },
