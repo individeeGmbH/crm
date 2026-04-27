@@ -519,25 +519,29 @@ def convert_to_deal(
 
 
 def update_last_contacted_on_call(doc, method=None):
-    logger = frappe.logger("crm", allow_site=True)
-    logger.setLevel(logging.DEBUG)
-    logger.info(f"[last_contacted] hook fired — name={doc.name} status={doc.status} "
-                f"ref_doctype={doc.reference_doctype} ref_name={doc.reference_docname}")
-
     if doc.status != "Completed":
-        logger.info(f"[last_contacted] skipping — status is not Completed")
         return
 
-    if doc.reference_doctype != "CRM Lead" or not doc.reference_docname:
-        logger.info(f"[last_contacted] skipping — not linked to a CRM Lead")
+    # The lead is linked via the links child table, not reference_docname
+    lead_name = None
+    for link in doc.get("links") or []:
+        if link.get("link_doctype") == "CRM Lead":
+            lead_name = link.get("link_name")
+            break
+
+    # Fallback: also check reference_doctype/reference_docname
+    if not lead_name and doc.reference_doctype == "CRM Lead" and doc.reference_docname:
+        lead_name = doc.reference_docname
+
+    if not lead_name:
+        frappe.log_error(title="[last_contacted] skipping", message="no CRM Lead link found")
         return
 
-    lead = frappe.get_doc("CRM Lead", doc.reference_docname)
-    if not lead:
+    if not frappe.db.exists("CRM Lead", lead_name):
         return
 
+    lead = frappe.get_doc("CRM Lead", lead_name)
     lead.last_contacted = frappe.utils.now_datetime()
     if lead.status == "New":
         lead.status = "Contacted"
-
     lead.save(ignore_permissions=True)
