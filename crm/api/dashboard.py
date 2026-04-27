@@ -1323,55 +1323,51 @@ def get_converted_leads(from_date=None, to_date=None, user=None):
 
 
 def get_calls_by_campaign(from_date=None, to_date=None, user=None):
-    """
-    Count calls grouped by the lead's custom_campaign field.
-    Only counts calls that are linked to a CRM Lead.
-    """
-    CallLog = DocType("CRM Call Log")
-    Lead = DocType("CRM Lead")
+    if not from_date or not to_date:
+        from_date = frappe.utils.get_first_day(from_date or frappe.utils.nowdate())
+        to_date = frappe.utils.get_last_day(to_date or frappe.utils.nowdate())
 
-    query = (
-        frappe.qb.from_(CallLog)
-        .join(Lead)
-        .on(CallLog.reference_docname == Lead.name)
-        .select(
-            Lead.custom_campaign,
-            Count("*").as_("calls"),
-        )
-        .where(CallLog.reference_doctype == "CRM Lead")
-        .where(Date(CallLog.creation).between(from_date, to_date))
-        .groupby(Lead.custom_campaign)
-        .orderby(Count("*"), order=frappe.qb.desc)
-    )
+    # Calls are linked to leads via the Dynamic Link child table,
+    # not via reference_docname (which is NULL for Twilio calls)
+    user_filter = "AND cl.caller = %(user)s" if user else ""
 
+    sql = f"""
+        SELECT
+            COALESCE(l.custom_campaign, 'No Campaign') AS campaign,
+            COUNT(*) AS calls
+        FROM `tabCRM Call Log` cl
+        JOIN `tabDynamic Link` dl
+            ON  dl.parent      = cl.name
+            AND dl.parenttype  = 'CRM Call Log'
+            AND dl.link_doctype = 'CRM Lead'
+        JOIN `tabCRM Lead` l ON l.name = dl.link_name
+        WHERE DATE(cl.creation) BETWEEN %(from_date)s AND %(to_date)s
+        {user_filter}
+        GROUP BY l.custom_campaign
+        ORDER BY COUNT(*) DESC
+    """
+
+    params = {"from_date": from_date, "to_date": to_date}
     if user:
-        query = query.where(CallLog.caller == user)
+        params["user"] = user
 
-    result = query.run(as_dict=True)
+    result = frappe.db.sql(sql, params, as_dict=True)
 
     return {
         "data": result or [],
         "title": _("Calls by Campaign"),
         "subtitle": _("Call volume per lead campaign"),
-        "xAxis": {
-            "title": _("Campaign"),
-            "key": "campaign",
-            "type": "category",
-        },
-        "yAxis": {
-            "title": _("Calls"),
-        },
-        "series": [
-            {"name": "calls", "type": "bar"},
-        ],
+        "xAxis": {"title": _("Campaign"), "key": "campaign", "type": "category"},
+        "yAxis": {"title": _("Calls")},
+        "series": [{"name": "calls", "type": "bar"}],
     }
 
 
 def get_conversions_by_campaign(from_date=None, to_date=None, user=None):
-    """
-    Count lead-to-deal conversions grouped by the lead's custom_campaign field.
-    Only counts deals that originated from a lead (Deal.lead is set).
-    """
+    if not from_date or not to_date:
+        from_date = frappe.utils.get_first_day(from_date or frappe.utils.nowdate())
+        to_date = frappe.utils.get_last_day(to_date or frappe.utils.nowdate())
+
     Deal = DocType("CRM Deal")
     Lead = DocType("CRM Lead")
 
@@ -1386,12 +1382,11 @@ def get_conversions_by_campaign(from_date=None, to_date=None, user=None):
         .where(Date(Deal.creation).between(from_date, to_date))
         .where(Deal.lead.isnotnull())
         .where(Deal.lead != "")
-        .groupby(Lead.custom_campaign)
+        .groupby(Coalesce(Lead.custom_campaign, "No Campaign"))
         .orderby(Count("*"), order=frappe.qb.desc)
     )
 
     if user:
-        # owner = who performed the conversion (set by Frappe on insert)
         query = query.where(Deal.owner == user)
 
     result = query.run(as_dict=True)
@@ -1400,17 +1395,9 @@ def get_conversions_by_campaign(from_date=None, to_date=None, user=None):
         "data": result or [],
         "title": _("Conversions by Campaign"),
         "subtitle": _("Lead-to-deal conversions per campaign"),
-        "xAxis": {
-            "title": _("Campaign"),
-            "key": "campaign",
-            "type": "category",
-        },
-        "yAxis": {
-            "title": _("Conversions"),
-        },
-        "series": [
-            {"name": "conversions", "type": "bar"},
-        ],
+        "xAxis": {"title": _("Campaign"), "key": "campaign", "type": "category"},
+        "yAxis": {"title": _("Conversions")},
+        "series": [{"name": "conversions", "type": "bar"}],
     }
 
 
@@ -1486,10 +1473,6 @@ def get_calls_for_rejection(title, tooltip, reason, from_date=None, to_date=None
     }
 
 def get_avg_time_to_first_call(from_date=None, to_date=None, user=None):
-    """
-    Average number of days between lead creation and the first call made to that lead.
-    The date range filters on when the first call happened.
-    """
     if not from_date or not to_date:
         from_date = frappe.utils.get_first_day(from_date or frappe.utils.nowdate())
         to_date = frappe.utils.get_last_day(to_date or frappe.utils.nowdate())
@@ -1500,8 +1483,6 @@ def get_avg_time_to_first_call(from_date=None, to_date=None, user=None):
 
     prev_from_date = frappe.utils.add_days(from_date, -diff)
 
-    # The subquery finds the first call date per lead.
-    # We filter the outer query by when that first call happened.
     user_filter = "AND cl.caller = %(user)s" if user else ""
 
     sql = f"""
@@ -1517,14 +1498,15 @@ def get_avg_time_to_first_call(from_date=None, to_date=None, user=None):
             END) AS prev_avg
         FROM (
             SELECT
-                cl.reference_docname AS lead_name,
-                MIN(cl.creation)     AS first_call_date
+                dl.link_name        AS lead_name,
+                MIN(cl.creation)    AS first_call_date
             FROM `tabCRM Call Log` cl
-            WHERE cl.reference_doctype = 'CRM Lead'
-              AND cl.reference_docname IS NOT NULL
-              AND cl.reference_docname != ''
-              {user_filter}
-            GROUP BY cl.reference_docname
+            JOIN `tabDynamic Link` dl
+                ON  dl.parent       = cl.name
+                AND dl.parenttype   = 'CRM Call Log'
+                AND dl.link_doctype = 'CRM Lead'
+            {user_filter}
+            GROUP BY dl.link_name
         ) fc
         JOIN `tabCRM Lead` l ON l.name = fc.lead_name
         WHERE DATE(fc.first_call_date) BETWEEN %(prev_from_date)s AND %(to_date)s
