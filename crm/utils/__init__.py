@@ -412,7 +412,7 @@ def on_communication_update(doc: Communication, method: str | None = None):
             and doc.sent_or_received == "Sent"
             and doc.communication_type == "Communication"
     ):
-        values["last_contacted"] = now()
+        values["last_contact_on"] = now()
 
     if not values:
         return
