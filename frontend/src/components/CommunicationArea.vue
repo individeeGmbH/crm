@@ -211,7 +211,7 @@ async function sendMail() {
     name: doc.value.name,
     send_email: 1,
     sender: fromEmail,
-    sender_full_name: getUser()?.full_name || undefined,
+    sender_full_name: newEmailEditor.value.senderFullName || getUser()?.full_name || undefined,
   })
 }
 
