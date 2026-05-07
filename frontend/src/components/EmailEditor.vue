@@ -213,9 +213,7 @@ import {validateEmail} from '@/utils'
 import Paragraph from '@tiptap/extension-paragraph'
 import {EditorContent} from '@tiptap/vue-3'
 import {ref, computed, nextTick, inject, watch} from 'vue'
-import {usersStore} from '@/stores/users'
-
-const {crmUsers} = usersStore()
+import {getUser} from '@/stores/users'
 
 const props = defineProps({
   placeholder: {type: String, default: null},
@@ -285,13 +283,10 @@ const from = computed(() => {
 
 const senderFullName = computed(() => {
   console.log('[senderFullName] fromEmail:', fromEmail.value)
-  console.log('[senderFullName] crmUsers:', crmUsers.value)
-
   if (!fromEmail.value) return null
-  const crmUser = crmUsers.value?.find((u) => u.email === fromEmail.value)
-  console.log('[senderFullName] matched crmUser:', crmUser)
-  if (crmUser) return crmUser.full_name
-  return user.doc?.full_name || null
+  const resolved = getUser(fromEmail.value)
+  console.log('[senderFullName] resolved:', resolved)
+  return resolved?.full_name || null
 })
 
 watch(
