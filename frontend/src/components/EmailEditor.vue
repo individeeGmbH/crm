@@ -1,84 +1,84 @@
 <template>
   <TextEditor
-    ref="textEditor"
-    :editor-class="[
+      ref="textEditor"
+      :editor-class="[
       'prose-sm max-w-none',
       editable && 'min-h-[7rem]',
       '[&_p.reply-to-content]:hidden',
     ]"
-    :content="content"
-    :starterkit-options="{
+      :content="content"
+      :starterkit-options="{
       heading: { levels: [2, 3, 4, 5, 6] },
       paragraph: false,
     }"
-    :placeholder="placeholder"
-    :editable="editable"
-    :extensions="[CustomParagraph]"
-    @change="editable ? (content = $event) : null"
+      :placeholder="placeholder"
+      :editable="editable"
+      :extensions="[CustomParagraph]"
+      @change="editable ? (content = $event) : null"
   >
     <template #top>
       <div class="flex flex-col gap-3">
         <div
-          v-if="from.length"
-          class="sm:mx-10 mx-4 flex items-center gap-2 border-t pt-2.5 h-10"
+            v-if="from.length"
+            class="sm:mx-10 mx-4 flex items-center gap-2 border-t pt-2.5 h-10"
         >
           <span class="text-xs text-ink-gray-4">{{ __('FROM') }}:</span>
           <FormControl
-            v-model="fromEmail"
-            type="select"
-            variant="ghost"
-            class="w-full"
-            :placeholder="__('')"
-            :options="from"
+              v-model="fromEmail"
+              type="select"
+              variant="ghost"
+              class="w-full"
+              :placeholder="__('')"
+              :options="from"
           />
         </div>
         <div
-          class="sm:mx-10 mx-4 flex items-center gap-2"
-          :class="from.length ? '' : 'border-t pt-2.5'"
+            class="sm:mx-10 mx-4 flex items-center gap-2"
+            :class="from.length ? '' : 'border-t pt-2.5'"
         >
           <span class="text-xs text-ink-gray-4 mr-2">{{ __('TO') }}:</span>
           <MultiSelectEmailInput
-            v-model="toEmails"
-            class="flex-1"
-            variant="ghost"
-            :validate="validateEmail"
-            :error-message="
+              v-model="toEmails"
+              class="flex-1"
+              variant="ghost"
+              :validate="validateEmail"
+              :error-message="
               (value) => __('{0} is an invalid email address', [value])
             "
           />
           <div class="flex gap-1.5">
             <Button
-              :label="__('CC')"
-              variant="ghost"
-              :class="[
+                :label="__('CC')"
+                variant="ghost"
+                :class="[
                 cc
                   ? '!bg-surface-gray-4 hover:bg-surface-gray-3'
                   : '!text-ink-gray-4',
               ]"
-              @click="toggleCC()"
+                @click="toggleCC()"
             />
             <Button
-              :label="__('BCC')"
-              variant="ghost"
-              :class="[
+                :label="__('BCC')"
+                variant="ghost"
+                :class="[
                 bcc
                   ? '!bg-surface-gray-4 hover:bg-surface-gray-3'
                   : '!text-ink-gray-4',
               ]"
-              @click="toggleBCC()"
+                @click="toggleBCC()"
             />
           </div>
         </div>
         <div v-if="cc" class="sm:mx-10 mx-4 flex items-center gap-2">
           <span class="text-xs text-ink-gray-4">{{ __('CC') }}:</span>
           <MultiSelectEmailInput
-            ref="ccInput"
-            v-model="ccEmails"
-            class="flex-1"
-            variant="ghost"
-            :fetchContacts="true"
-            :validate="validateEmail"
-            :error-message="
+              ref="ccInput"
+              v-model="ccEmails"
+              class="flex-1"
+              variant="ghost"
+              :fetchContacts="true"
+              :validate="validateEmail"
+              :error-message="
               (value) => __('{0} is an invalid email address', [value])
             "
           />
@@ -86,13 +86,13 @@
         <div v-if="bcc" class="sm:mx-10 mx-4 flex items-center gap-2">
           <span class="text-xs text-ink-gray-4">{{ __('BCC') }}:</span>
           <MultiSelectEmailInput
-            ref="bccInput"
-            v-model="bccEmails"
-            class="flex-1"
-            variant="ghost"
-            :fetchContacts="true"
-            :validate="validateEmail"
-            :error-message="
+              ref="bccInput"
+              v-model="bccEmails"
+              class="flex-1"
+              variant="ghost"
+              :fetchContacts="true"
+              :validate="validateEmail"
+              :error-message="
               (value) => __('{0} is an invalid email address', [value])
             "
           />
@@ -100,85 +100,85 @@
         <div class="sm:mx-10 mx-4 flex items-center gap-2 pb-2.5">
           <span class="text-xs text-ink-gray-4">{{ __('SUBJECT') }}:</span>
           <input
-            v-model="subject"
-            class="flex-1 border-none text-ink-gray-9 text-base bg-surface-white hover:bg-surface-white focus:border-none focus:!shadow-none focus-visible:!ring-0"
+              v-model="subject"
+              class="flex-1 border-none text-ink-gray-9 text-base bg-surface-white hover:bg-surface-white focus:border-none focus:!shadow-none focus-visible:!ring-0"
           />
         </div>
       </div>
     </template>
     <template #editor="{ editor: _editor }">
       <EditorContent
-        :class="[
+          :class="[
           editable &&
             'sm:mx-10 mx-4 max-h-[35vh] overflow-y-auto border-t py-3',
         ]"
-        :editor="_editor"
+          :editor="_editor"
       />
     </template>
     <template #bottom>
       <div v-if="editable" class="flex flex-col gap-2">
         <div class="flex flex-wrap gap-2 sm:px-10 px-4">
           <AttachmentItem
-            v-for="a in attachments"
-            :key="a.file_url"
-            :label="a.file_name"
+              v-for="a in attachments"
+              :key="a.file_url"
+              :label="a.file_name"
           >
             <template #suffix>
               <FeatherIcon
-                class="h-3.5"
-                name="x"
-                @click.stop="removeAttachment(a)"
+                  class="h-3.5"
+                  name="x"
+                  @click.stop="removeAttachment(a)"
               />
             </template>
           </AttachmentItem>
         </div>
         <div
-          class="flex justify-between gap-2 overflow-hidden border-t sm:px-10 px-4 py-2.5"
+            class="flex justify-between gap-2 overflow-hidden border-t sm:px-10 px-4 py-2.5"
         >
           <div class="flex gap-1 items-center overflow-x-auto">
-            <TextEditorBubbleMenu :buttons="textEditorMenuButtons" />
+            <TextEditorBubbleMenu :buttons="textEditorMenuButtons"/>
             <IconPicker
-              v-slot="{ togglePopover }"
-              v-model="emoji"
-              @update:modelValue="() => appendEmoji()"
+                v-slot="{ togglePopover }"
+                v-model="emoji"
+                @update:modelValue="() => appendEmoji()"
             >
               <Button
-                :tooltip="__('Insert Emoji')"
-                :icon="SmileIcon"
-                variant="ghost"
-                @click="togglePopover()"
+                  :tooltip="__('Insert Emoji')"
+                  :icon="SmileIcon"
+                  variant="ghost"
+                  @click="togglePopover()"
               />
             </IconPicker>
             <FileUploader
-              :upload-args="{
+                :upload-args="{
                 doctype: doctype,
                 docname: modelValue.name,
                 private: true,
               }"
-              @success="(f) => attachments.push(f)"
+                @success="(f) => attachments.push(f)"
             >
               <template #default="{ openFileSelector }">
                 <Button
-                  :tooltip="__('Attach a File')"
-                  :icon="AttachmentIcon"
-                  variant="ghost"
-                  @click="openFileSelector()"
+                    :tooltip="__('Attach a File')"
+                    :icon="AttachmentIcon"
+                    variant="ghost"
+                    @click="openFileSelector()"
                 />
               </template>
             </FileUploader>
             <Button
-              :tooltip="__('Insert Email Template')"
-              variant="ghost"
-              :icon="EmailTemplateIcon"
-              @click="showEmailTemplateSelectorModal = true"
+                :tooltip="__('Insert Email Template')"
+                variant="ghost"
+                :icon="EmailTemplateIcon"
+                @click="showEmailTemplateSelectorModal = true"
             />
           </div>
           <div class="mt-2 flex items-center justify-end space-x-2 sm:mt-0">
-            <Button v-bind="discardButtonProps || {}" :label="__('Discard')" />
+            <Button v-bind="discardButtonProps || {}" :label="__('Discard')"/>
             <Button
-              variant="solid"
-              v-bind="submitButtonProps || {}"
-              :label="__('Send')"
+                variant="solid"
+                v-bind="submitButtonProps || {}"
+                :label="__('Send')"
             />
           </div>
         </div>
@@ -186,9 +186,9 @@
     </template>
   </TextEditor>
   <EmailTemplateSelectorModal
-    v-model="showEmailTemplateSelectorModal"
-    :doctype="doctype"
-    @apply="applyEmailTemplate"
+      v-model="showEmailTemplateSelectorModal"
+      :doctype="doctype"
+      @apply="applyEmailTemplate"
   />
 </template>
 
@@ -207,23 +207,24 @@ import {
   call,
   FormControl,
 } from 'frappe-ui'
-import { useTelemetry } from 'frappe-ui/frappe'
-import { useDocument } from '@/data/document'
-import { validateEmail } from '@/utils'
+import {useTelemetry} from 'frappe-ui/frappe'
+import {useDocument} from '@/data/document'
+import {validateEmail} from '@/utils'
 import Paragraph from '@tiptap/extension-paragraph'
-import { EditorContent } from '@tiptap/vue-3'
-import { ref, computed, nextTick, inject, watch } from 'vue'
-import { usersStore } from '@/stores/users'
-const { crmUsers } = usersStore()
+import {EditorContent} from '@tiptap/vue-3'
+import {ref, computed, nextTick, inject, watch} from 'vue'
+import {usersStore} from '@/stores/users'
+
+const {crmUsers} = usersStore()
 
 const props = defineProps({
-  placeholder: { type: String, default: null },
-  editable: { type: Boolean, default: true },
-  doctype: { type: String, default: 'CRM Lead' },
-  subject: { type: String, default: __('Email From Lead') },
-  editorProps: { type: Object, default: () => ({}) },
-  submitButtonProps: { type: Object, default: () => ({}) },
-  discardButtonProps: { type: Object, default: () => ({}) },
+  placeholder: {type: String, default: null},
+  editable: {type: Boolean, default: true},
+  doctype: {type: String, default: 'CRM Lead'},
+  subject: {type: String, default: __('Email From Lead')},
+  editorProps: {type: Object, default: () => ({})},
+  submitButtonProps: {type: Object, default: () => ({})},
+  discardButtonProps: {type: Object, default: () => ({})},
 })
 
 const CustomParagraph = Paragraph.extend({
@@ -244,16 +245,16 @@ const CustomParagraph = Paragraph.extend({
   },
 })
 
-const modelValue = defineModel({ type: Object })
+const modelValue = defineModel({type: Object})
 const attachments = defineModel('attachments', {
   type: Array,
   default: () => [],
 })
-const content = defineModel('content', { type: String, default: '' })
+const content = defineModel('content', {type: String, default: ''})
 
-const { capture } = useTelemetry()
-const { user: sessionUser } = inject('session')
-const { document: user } = useDocument('User', sessionUser)
+const {capture} = useTelemetry()
+const {user: sessionUser} = inject('session')
+const {document: user} = useDocument('User', sessionUser)
 
 const textEditor = ref(null)
 const cc = ref(false)
@@ -283,20 +284,24 @@ const from = computed(() => {
 })
 
 const senderFullName = computed(() => {
+  console.log('[senderFullName] fromEmail:', fromEmail.value)
+  console.log('[senderFullName] crmUsers:', crmUsers.value)
+
   if (!fromEmail.value) return null
   const crmUser = crmUsers.value?.find((u) => u.email === fromEmail.value)
+  console.log('[senderFullName] matched crmUser:', crmUser)
   if (crmUser) return crmUser.full_name
   return user.doc?.full_name || null
 })
 
 watch(
-  from,
-  (fromOptions) => {
-    if (!fromOptions.find((f) => f.value === fromEmail.value)) {
-      fromEmail.value = fromOptions.length ? fromOptions[0].value : ''
-    }
-  },
-  { immediate: true },
+    from,
+    (fromOptions) => {
+      if (!fromOptions.find((f) => f.value === fromEmail.value)) {
+        fromEmail.value = fromOptions.length ? fromOptions[0].value : ''
+      }
+    },
+    {immediate: true},
 )
 
 const editor = computed(() => {
@@ -311,11 +316,11 @@ const showEmailTemplateSelectorModal = ref(false)
 
 async function applyEmailTemplate(template) {
   let data = await call(
-    'frappe.email.doctype.email_template.email_template.get_email_template',
-    {
-      template_name: template.name,
-      doc: modelValue.value,
-    },
+      'frappe.email.doctype.email_template.email_template.get_email_template',
+      {
+        template_name: template.name,
+        doc: modelValue.value,
+      },
   )
 
   if (template.subject) {
@@ -327,14 +332,14 @@ async function applyEmailTemplate(template) {
     editor.value.commands.setContent(data.message)
   }
   showEmailTemplateSelectorModal.value = false
-  capture('email_template_applied', { doctype: props.doctype })
+  capture('email_template_applied', {doctype: props.doctype})
 }
 
 function appendEmoji() {
   editor.value.commands.insertContent(emoji.value)
   editor.value.commands.focus()
   emoji.value = ''
-  capture('emoji_inserted_in_email', { emoji: emoji.value })
+  capture('emoji_inserted_in_email', {emoji: emoji.value})
 }
 
 function toggleCC() {
