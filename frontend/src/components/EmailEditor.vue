@@ -213,7 +213,8 @@ import {validateEmail} from '@/utils'
 import Paragraph from '@tiptap/extension-paragraph'
 import {EditorContent} from '@tiptap/vue-3'
 import {ref, computed, nextTick, inject, watch} from 'vue'
-import {getUser} from '@/stores/users'
+import { usersStore } from '@/stores/users'
+const { getUser } = usersStore()
 
 const props = defineProps({
   placeholder: {type: String, default: null},
