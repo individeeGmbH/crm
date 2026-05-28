@@ -547,11 +547,11 @@ def get_data(
                         (field.split(" ")[0], field.split(" ")[1]) for field in order_by_fields
                     ]
                     if (group_by_field, "asc") in order_by_fields:
-                        options.sort()
+                        options.sort(key=str)
                     elif (group_by_field, "desc") in order_by_fields:
-                        options.sort(reverse=True)
+                        options.sort(key=str, reverse=True)
                 else:
-                    options.sort()
+                    options.sort(key=str)
                 return options
 
         for field in fields:
