@@ -335,6 +335,8 @@ def get_data(
                 filters[key] = ['>=', since]
             elif str(operator).lower() == 'timespan' and val == 'since last working day':
                 filters[key] = ['>=', _get_last_working_day()]
+            elif str(operator).lower() == 'timespan' and val == 'before now':
+                filters[key] = ['<=', frappe.utils.now_datetime()]
 
     if default_filters:
         default_filters = frappe.parse_json(default_filters)
@@ -900,6 +902,7 @@ def _format_quick_filters(fields, doctype):
         quick_filters = [f for f in quick_filters if f.get("fieldname") != "converted"]
     return quick_filters
 
+
 def _get_last_working_day():
     """
     Returns the start of the last working day:
@@ -913,11 +916,11 @@ def _get_last_working_day():
     today = frappe.utils.now_datetime().replace(hour=0, minute=0, second=0, microsecond=0)
     weekday = today.weekday()  # 0=Mon, 1=Tue, ..., 6=Sun
 
-    if weekday == 0:       # Monday → go back to Friday
+    if weekday == 0:  # Monday → go back to Friday
         return today - timedelta(days=3)
-    elif weekday == 6:     # Sunday → go back to Friday
+    elif weekday == 6:  # Sunday → go back to Friday
         return today - timedelta(days=2)
-    elif weekday == 5:     # Saturday → go back to Friday
+    elif weekday == 5:  # Saturday → go back to Friday
         return today - timedelta(days=1)
-    else:                  # Tue–Fri → yesterday
+    else:  # Tue–Fri → yesterday
         return today - timedelta(days=1)

@@ -3,39 +3,39 @@
     <template #target="{ togglePopover, close }">
       <div class="flex items-center">
         <Button
-          :label="__('Filter')"
-          :class="filters?.size ? 'rounded-r-none' : ''"
-          :iconLeft="FilterIcon"
-          @click="togglePopover"
+            :label="__('Filter')"
+            :class="filters?.size ? 'rounded-r-none' : ''"
+            :iconLeft="FilterIcon"
+            @click="togglePopover"
         >
           <template v-if="filters?.size" #suffix>
             <div
-              class="flex h-5 w-5 items-center justify-center rounded-[5px] bg-surface-white pt-px text-xs font-medium text-ink-gray-8 shadow-sm"
+                class="flex h-5 w-5 items-center justify-center rounded-[5px] bg-surface-white pt-px text-xs font-medium text-ink-gray-8 shadow-sm"
             >
               {{ filters.size }}
             </div>
           </template>
         </Button>
         <Button
-          v-if="filters?.size"
-          :tooltip="__('Clear All Filters')"
-          class="rounded-l-none border-l"
-          icon="x"
-          @click.stop="clearfilter(close)"
+            v-if="filters?.size"
+            :tooltip="__('Clear All Filters')"
+            class="rounded-l-none border-l"
+            icon="x"
+            @click.stop="clearfilter(close)"
         />
       </div>
     </template>
     <template #body="{ close }">
       <div
-        class="my-2 min-w-40 rounded-lg bg-surface-modal shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+          class="my-2 min-w-40 rounded-lg bg-surface-modal shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
       >
         <div class="min-w-72 p-2 sm:min-w-[400px]">
           <template v-if="filters?.size">
             <div
-              v-for="(f, i) in filters"
-              id="filter-list"
-              :key="i"
-              class="mb-4 sm:mb-3"
+                v-for="(f, i) in filters"
+                id="filter-list"
+                :key="i"
+                class="mb-4 sm:mb-3"
             >
               <div v-if="isMobileView" class="flex flex-col gap-2">
                 <div class="-mb-2 flex w-full items-center justify-between">
@@ -43,37 +43,37 @@
                     {{ i == 0 ? __('Where') : __('And') }}
                   </div>
                   <Button
-                    class="flex"
-                    variant="ghost"
-                    icon="x"
-                    @click="removeFilter(i)"
+                      class="flex"
+                      variant="ghost"
+                      icon="x"
+                      @click="removeFilter(i)"
                   />
                 </div>
                 <div id="fieldname" class="w-full">
                   <Autocomplete
-                    :value="f.field.fieldname"
-                    :options="filterableFields.data"
-                    :placeholder="__('First Name')"
-                    @change="(e) => updateFilter(e, i)"
+                      :value="f.field.fieldname"
+                      :options="filterableFields.data"
+                      :placeholder="__('First Name')"
+                      @change="(e) => updateFilter(e, i)"
                   />
                 </div>
                 <div id="operator">
                   <FormControl
-                    v-model="f.operator"
-                    type="select"
-                    :options="
+                      v-model="f.operator"
+                      type="select"
+                      :options="
                       getOperators(f.field.fieldtype, f.field.fieldname)
                     "
-                    :placeholder="__('Equals')"
-                    @update:modelValue="() => updateOperator(f)"
+                      :placeholder="__('Equals')"
+                      @update:modelValue="() => updateOperator(f)"
                   />
                 </div>
                 <div id="value" class="w-full">
                   <component
-                    :is="getValueControl(f)"
-                    v-model="f.value"
-                    :placeholder="placeholder(f)"
-                    @change="(v) => updateValue(v, f)"
+                      :is="getValueControl(f)"
+                      v-model="f.value"
+                      :placeholder="placeholder(f)"
+                      @change="(v) => updateValue(v, f)"
                   />
                 </div>
               </div>
@@ -84,70 +84,70 @@
                   </div>
                   <div id="fieldname" class="!min-w-[140px]">
                     <Autocomplete
-                      :value="f.field.fieldname"
-                      :options="filterableFields.data"
-                      :placeholder="__('First Name')"
-                      @change="(e) => updateFilter(e, i)"
+                        :value="f.field.fieldname"
+                        :options="filterableFields.data"
+                        :placeholder="__('First Name')"
+                        @change="(e) => updateFilter(e, i)"
                     />
                   </div>
                   <div id="operator">
                     <FormControl
-                      v-model="f.operator"
-                      type="select"
-                      :options="
+                        v-model="f.operator"
+                        type="select"
+                        :options="
                         getOperators(f.field.fieldtype, f.field.fieldname)
                       "
-                      :placeholder="__('Equals')"
-                      @update:modelValue="() => updateOperator(f)"
+                        :placeholder="__('Equals')"
+                        @update:modelValue="() => updateOperator(f)"
                     />
                   </div>
                   <div id="value" class="!min-w-[140px]">
                     <component
-                      :is="getValueControl(f)"
-                      v-model="f.value"
-                      :placeholder="placeholder(f)"
-                      @change="(v) => updateValue(v, f)"
+                        :is="getValueControl(f)"
+                        v-model="f.value"
+                        :placeholder="placeholder(f)"
+                        @change="(v) => updateValue(v, f)"
                     />
                   </div>
                 </div>
                 <Button
-                  class="flex"
-                  variant="ghost"
-                  icon="x"
-                  @click="removeFilter(i)"
+                    class="flex"
+                    variant="ghost"
+                    icon="x"
+                    @click="removeFilter(i)"
                 />
               </div>
             </div>
           </template>
           <div
-            v-else
-            class="mb-3 flex h-7 items-center px-3 text-sm text-ink-gray-5"
+              v-else
+              class="mb-3 flex h-7 items-center px-3 text-sm text-ink-gray-5"
           >
             {{ __('Empty - Choose a field to filter by') }}
           </div>
           <div class="flex items-center justify-between gap-2">
             <Autocomplete
-              value=""
-              :options="availableFilters"
-              :placeholder="__('First Name')"
-              @change="(e) => setfilter(e)"
+                value=""
+                :options="availableFilters"
+                :placeholder="__('First Name')"
+                @change="(e) => setfilter(e)"
             >
               <template #target="{ togglePopover }">
                 <Button
-                  class="!text-ink-gray-5"
-                  variant="ghost"
-                  :label="__('Add Filter')"
-                  iconLeft="plus"
-                  @click="togglePopover()"
+                    class="!text-ink-gray-5"
+                    variant="ghost"
+                    :label="__('Add Filter')"
+                    iconLeft="plus"
+                    @click="togglePopover()"
                 />
               </template>
             </Autocomplete>
             <Button
-              v-if="filters?.size"
-              class="!text-ink-gray-5"
-              variant="ghost"
-              :label="__('Clear All Filters')"
-              @click="clearfilter(close)"
+                v-if="filters?.size"
+                class="!text-ink-gray-5"
+                variant="ghost"
+                :label="__('Clear All Filters')"
+                @click="clearfilter(close)"
             />
           </div>
         </div>
@@ -169,8 +169,8 @@ import {
   DateTimePicker,
   DateRangePicker,
 } from 'frappe-ui'
-import { h, computed, onMounted } from 'vue'
-import { isMobileView } from '@/composables/settings'
+import {h, computed, onMounted} from 'vue'
+import {isMobileView} from '@/composables/settings'
 
 const typeCheck = ['Check']
 const typeLink = ['Link', 'Dynamic Link']
@@ -182,18 +182,21 @@ const typeDuration = ['Duration']
 const typeRating = ['Rating']
 
 const props = defineProps({
-  doctype: { type: String, required: true },
-  default_filters: { type: Object, default: () => {} },
+  doctype: {type: String, required: true},
+  default_filters: {
+    type: Object, default: () => {
+    }
+  },
 })
 
 const emit = defineEmits(['update'])
 
-const list = defineModel({ type: Object, default: () => ({}) })
+const list = defineModel({type: Object, default: () => ({})})
 
 const filterableFields = createResource({
   url: 'crm.api.doc.get_filterable_fields',
   cache: ['filterableFields', props.doctype],
-  params: { doctype: props.doctype },
+  params: {doctype: props.doctype},
 })
 
 onMounted(() => {
@@ -204,11 +207,11 @@ onMounted(() => {
 const filters = computed(() => {
   if (!list.value?.data) return new Set()
   let allFilters =
-    list.value?.params?.filters || list.value.data?.params?.filters
+      list.value?.params?.filters || list.value.data?.params?.filters
   if (
-    !allFilters ||
-    Object.keys(allFilters).length === 0 ||
-    !filterableFields.data
+      !allFilters ||
+      Object.keys(allFilters).length === 0 ||
+      !filterableFields.data
   )
     return new Set()
   // remove default filters
@@ -227,7 +230,7 @@ const availableFilters = computed(() => {
   }
 
   return filterableFields.data.filter(
-    (field) => !selectedFieldNames.has(field.fieldname),
+      (field) => !selectedFieldNames.has(field.fieldname),
   )
 })
 
@@ -269,114 +272,114 @@ function getOperators(fieldtype, fieldname) {
   let options = []
   if (typeString.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('Like'), value: 'like' },
-        { label: __('Not like'), value: 'not like' },
-        { label: __('In'), value: 'in' },
-        { label: __('Not in'), value: 'not in' },
-        { label: __('Is'), value: 'is' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('Like'), value: 'like'},
+          {label: __('Not like'), value: 'not like'},
+          {label: __('In'), value: 'in'},
+          {label: __('Not in'), value: 'not in'},
+          {label: __('Is'), value: 'is'},
+        ],
     )
   }
   if (fieldname === '_assign') {
     // TODO: make equals and not equals work
     options = [
-      { label: __('Like'), value: 'like' },
-      { label: __('Not like'), value: 'not like' },
-      { label: __('Is'), value: 'is' },
+      {label: __('Like'), value: 'like'},
+      {label: __('Not like'), value: 'not like'},
+      {label: __('Is'), value: 'is'},
     ]
   }
   if (typeNumber.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('Like'), value: 'like' },
-        { label: __('Not like'), value: 'not like' },
-        { label: __('In'), value: 'in' },
-        { label: __('Not in'), value: 'not in' },
-        { label: __('Is'), value: 'is' },
-        { label: __('<'), value: '<' },
-        { label: __('>'), value: '>' },
-        { label: __('<='), value: '<=' },
-        { label: __('>='), value: '>=' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('Like'), value: 'like'},
+          {label: __('Not like'), value: 'not like'},
+          {label: __('In'), value: 'in'},
+          {label: __('Not in'), value: 'not in'},
+          {label: __('Is'), value: 'is'},
+          {label: __('<'), value: '<'},
+          {label: __('>'), value: '>'},
+          {label: __('<='), value: '<='},
+          {label: __('>='), value: '>='},
+        ],
     )
   }
   if (typeSelect.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('In'), value: 'in' },
-        { label: __('Not in'), value: 'not in' },
-        { label: __('Is'), value: 'is' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('In'), value: 'in'},
+          {label: __('Not in'), value: 'not in'},
+          {label: __('Is'), value: 'is'},
+        ],
     )
   }
   if (typeLink.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('Like'), value: 'like' },
-        { label: __('Not like'), value: 'not like' },
-        { label: __('In'), value: 'in' },
-        { label: __('Not in'), value: 'not in' },
-        { label: __('Is'), value: 'is' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('Like'), value: 'like'},
+          {label: __('Not like'), value: 'not like'},
+          {label: __('In'), value: 'in'},
+          {label: __('Not in'), value: 'not in'},
+          {label: __('Is'), value: 'is'},
+        ],
     )
   }
   if (typeCheck.includes(fieldtype)) {
-    options.push(...[{ label: __('Equals'), value: 'equals' }])
+    options.push(...[{label: __('Equals'), value: 'equals'}])
   }
   if (typeDuration.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Like'), value: 'like' },
-        { label: __('Not like'), value: 'not like' },
-        { label: __('In'), value: 'in' },
-        { label: __('Not in'), value: 'not in' },
-        { label: __('Is'), value: 'is' },
-      ],
+        ...[
+          {label: __('Like'), value: 'like'},
+          {label: __('Not like'), value: 'not like'},
+          {label: __('In'), value: 'in'},
+          {label: __('Not in'), value: 'not in'},
+          {label: __('Is'), value: 'is'},
+        ],
     )
   }
   if (typeDate.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('Is'), value: 'is' },
-        { label: __('>'), value: '>' },
-        { label: __('<'), value: '<' },
-        { label: __('>='), value: '>=' },
-        { label: __('<='), value: '<=' },
-        { label: __('Between'), value: 'between' },
-        { label: __('Timespan'), value: 'timespan' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('Is'), value: 'is'},
+          {label: __('>'), value: '>'},
+          {label: __('<'), value: '<'},
+          {label: __('>='), value: '>='},
+          {label: __('<='), value: '<='},
+          {label: __('Between'), value: 'between'},
+          {label: __('Timespan'), value: 'timespan'},
+        ],
     )
   }
   if (typeRating.includes(fieldtype)) {
     options.push(
-      ...[
-        { label: __('Equals'), value: 'equals' },
-        { label: __('Not equals'), value: 'not equals' },
-        { label: __('Greater than'), value: '>' },
-        { label: __('Less than'), value: '<' },
-        { label: __('Greater than or equal to'), value: '>=' },
-        { label: __('Less than or equal to'), value: '<=' },
-        { label: __('Is'), value: 'is' },
-      ],
+        ...[
+          {label: __('Equals'), value: 'equals'},
+          {label: __('Not equals'), value: 'not equals'},
+          {label: __('Greater than'), value: '>'},
+          {label: __('Less than'), value: '<'},
+          {label: __('Greater than or equal to'), value: '>='},
+          {label: __('Less than or equal to'), value: '<='},
+          {label: __('Is'), value: 'is'},
+        ],
     )
   }
   return options
 }
 
 function getValueControl(f) {
-  const { field, operator } = f
-  const { fieldtype, options } = field
+  const {field, operator} = f
+  const {fieldtype, options} = field
   if (operator == 'is') {
     return h(FormControl, {
       type: 'select',
@@ -401,10 +404,10 @@ function getValueControl(f) {
       'onUpdate:modelValue': (v) => updateValue(v, f),
     })
   } else if (['like', 'not like', 'in', 'not in'].includes(operator)) {
-    return h(FormControl, { type: 'text' })
+    return h(FormControl, {type: 'text'})
   } else if (typeSelect.includes(fieldtype) || typeCheck.includes(fieldtype)) {
     const _options =
-      fieldtype == 'Check' ? ['Yes', 'No'] : getSelectOptions(options)
+        fieldtype == 'Check' ? ['Yes', 'No'] : getSelectOptions(options)
     return h(FormControl, {
       type: 'select',
       options: _options.map((o) => ({
@@ -416,15 +419,15 @@ function getValueControl(f) {
     })
   } else if (typeLink.includes(fieldtype)) {
     if (fieldtype == 'Dynamic Link') {
-      return h(FormControl, { type: 'text' })
+      return h(FormControl, {type: 'text'})
     }
-    return h(Link, { class: 'form-control', doctype: options, value: f.value })
+    return h(Link, {class: 'form-control', doctype: options, value: f.value})
   } else if (typeNumber.includes(fieldtype)) {
-    return h(FormControl, { type: 'number' })
+    return h(FormControl, {type: 'number'})
   } else if (typeDate.includes(fieldtype) && operator == 'between') {
-    return h(DateRangePicker, { value: f.value, iconLeft: '' })
+    return h(DateRangePicker, {value: f.value, iconLeft: ''})
   } else if (typeDuration.includes(fieldtype)) {
-    return h(DurationInput, { value: f.value })
+    return h(DurationInput, {value: f.value})
   } else if (typeRating.includes(fieldtype)) {
     return h(RatingInput, {
       value: f.value,
@@ -437,7 +440,7 @@ function getValueControl(f) {
       iconLeft: '',
     })
   } else {
-    return h(FormControl, { type: 'text' })
+    return h(FormControl, {type: 'text'})
   }
 }
 
@@ -552,13 +555,13 @@ function parseFilters(filters) {
   const obj = filtersArray.map(transformIn).reduce((p, c) => {
     if (['equals', '='].includes(c.operator)) {
       p[c.fieldname] =
-        c.value == 'Yes' ? true : c.value == 'No' ? false : c.value
+          c.value == 'Yes' ? true : c.value == 'No' ? false : c.value
     } else {
       p[c.fieldname] = [operatorMap[c.operator.toLowerCase()], c.value]
     }
     return p
   }, {})
-  const merged = { ...obj }
+  const merged = {...obj}
   return merged
 }
 
@@ -676,6 +679,10 @@ const timespanOptions = [
   {
     label: __('Since Last Working Day'),
     value: 'since last working day',
+  },
+  {
+    label: __('Before Now'),
+    value: 'before now',
   },
   {
     label: __('Yesterday'),
