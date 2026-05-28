@@ -97,13 +97,6 @@ const nextActionOn = ref('')
 const loading = ref(false)
 const error = ref(null)
 
-const lostReasons = createListResource({
-  doctype: 'CRM Lost Reason',
-  fields: ['name'],
-  auto: true,
-  transform: (data) => data.map((d) => ({ label: d.name, value: d.name })),
-})
-
 function getDefaultNextActionDate(status) {
   const today = new Date()
   const days = status === 'Completed' ? 3 : 1
