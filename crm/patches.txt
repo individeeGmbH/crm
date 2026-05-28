@@ -27,3 +27,4 @@ crm.patches.v1_0.create_email_account_custom_field
 crm.patches.v1_0.create_default_quick_filters
 crm.patches.backfill_lead_call_stats
 crm.patches.backfill_priority_campaigns
+crm.patches.backfill_contact_dates
