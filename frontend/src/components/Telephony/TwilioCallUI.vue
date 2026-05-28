@@ -474,6 +474,8 @@ const callLogResource = createResource({
       contact: contact.value,
       phoneNumber: phoneNumber.value,
       duration: data.duration,
+      status: data.status,
+      leadName: data._lead || contact.value?.lead || null,
     }
     showPostCallSummaryModal.value = true
   },
