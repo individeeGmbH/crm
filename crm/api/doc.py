@@ -328,11 +328,13 @@ def get_data(
                     frappe.utils.now_datetime(), days=-5
                 )
                 filters[key] = ['>=', since]
-            if str(operator).lower() == 'timespan' and val == 'last 30 days':
+            elif str(operator).lower() == 'timespan' and val == 'last 30 days':
                 since = frappe.utils.add_to_date(
                     frappe.utils.now_datetime(), days=-30
                 )
                 filters[key] = ['>=', since]
+            elif str(operator).lower() == 'timespan' and val == 'since last working day':
+                filters[key] = ['>=', _get_last_working_day()]
 
     if default_filters:
         default_filters = frappe.parse_json(default_filters)
@@ -897,3 +899,25 @@ def _format_quick_filters(fields, doctype):
     if doctype == "CRM Lead":
         quick_filters = [f for f in quick_filters if f.get("fieldname") != "converted"]
     return quick_filters
+
+def _get_last_working_day():
+    """
+    Returns the start of the last working day:
+    - Tue–Fri: yesterday
+    - Mon: previous Friday
+    - Sat: previous Friday
+    - Sun: previous Friday
+    """
+    from datetime import timedelta
+
+    today = frappe.utils.now_datetime().replace(hour=0, minute=0, second=0, microsecond=0)
+    weekday = today.weekday()  # 0=Mon, 1=Tue, ..., 6=Sun
+
+    if weekday == 0:       # Monday → go back to Friday
+        return today - timedelta(days=3)
+    elif weekday == 6:     # Sunday → go back to Friday
+        return today - timedelta(days=2)
+    elif weekday == 5:     # Saturday → go back to Friday
+        return today - timedelta(days=1)
+    else:                  # Tue–Fri → yesterday
+        return today - timedelta(days=1)

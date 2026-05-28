@@ -518,13 +518,7 @@ def convert_to_deal(
     return _deal
 
 
-def update_last_contacted_on_call(doc, method=None):
-    if doc.status != "Completed":
-        return
-
-    if doc.duration < 5:
-        return
-
+def update_lead_call_info(doc, method=None):
     lead_name = None
     links = doc.get("links") or []
     for link in links:
@@ -543,7 +537,31 @@ def update_last_contacted_on_call(doc, method=None):
         return
 
     lead = frappe.get_doc("CRM Lead", lead_name)
-    lead.last_contact_on = frappe.utils.now_datetime()
-    if lead.status == "New" or lead.status == "Not Reached":
-        lead.status = "Reached"
+    lead.last_dial_on = frappe.utils.now_datetime()
+    if doc.status == "Completed" and doc.duration >= 5:
+        lead.last_contact_on = frappe.utils.now_datetime()
+        if lead.status == "New" or lead.status == "Not Reached":
+            lead.status = "Reached"
+
     lead.save(ignore_permissions=True)
+    frappe.db.sql("""
+        UPDATE `tabCRM Lead`
+        SET dial_count = COALESCE(dial_count, 0) + 1
+        WHERE name = %s
+    """, lead_name)
+
+def update_priority_3():
+    from crm.api.doc import _get_last_working_day
+
+    last_working_day = _get_last_working_day()
+
+    frappe.db.sql("""
+        UPDATE `tabCRM Lead`
+        SET priority_3 = CASE
+            WHEN dial_count = 0 THEN 1
+            WHEN dial_count > 0 AND creation < %s THEN 1
+            ELSE 0
+        END
+        WHERE converted = 0
+    """, last_working_day)
+    frappe.db.commit()

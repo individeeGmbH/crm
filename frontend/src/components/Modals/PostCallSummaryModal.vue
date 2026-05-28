@@ -52,6 +52,17 @@
               :rows="4"
           />
         </div>
+
+        <!-- Next Action Date -->
+        <div v-if="data?.leadName" class="flex flex-col gap-1">
+          <label class="block text-sm font-medium text-ink-gray-7">
+            {{ __('Next Action On') }}
+          </label>
+          <DatePicker
+              v-model="nextActionOn"
+              :placeholder="__('Select date...')"
+          />
+        </div>
         <ErrorMessage class="mt-3" :message="error"/>
       </div>
 
@@ -81,14 +92,30 @@ const props = defineProps({
 const show = defineModel({type: Boolean})
 
 const summary = ref('')
-const rejectionReason = ref('')
+const rejectionReason = ref(null)
+const nextActionOn = ref('')
 const loading = ref(false)
 const error = ref(null)
+
+const lostReasons = createListResource({
+  doctype: 'CRM Lost Reason',
+  fields: ['name'],
+  auto: true,
+  transform: (data) => data.map((d) => ({ label: d.name, value: d.name })),
+})
+
+function getDefaultNextActionDate(status) {
+  const today = new Date()
+  const days = status === 'Completed' ? 3 : 1
+  today.setDate(today.getDate() + days)
+  return today.toISOString().split('T')[0]
+}
 
 watch(show, (val) => {
   if (val) {
     summary.value = ''
-    rejectionReason.value = ''
+    rejectionReason.value = null
+    nextActionOn.value = getDefaultNextActionDate(props.data?.status)
     error.value = null
   }
 })
@@ -106,10 +133,18 @@ async function saveSummary() {
       name: props.data.name,
       fieldname: {
         summary: summary.value,
-        rejection_reason: rejectionReason.value,
+        rejection_reason: rejectionReason.value?.value ?? rejectionReason.value ?? '',
       },
       value: summary.value,
     })
+    if (props.data.leadName && nextActionOn.value) {
+      await call('frappe.client.set_value', {
+        doctype: 'CRM Lead',
+        name: props.data.leadName,
+        fieldname: 'next_action_on',
+        value: nextActionOn.value,
+      })
+    }
     show.value = false
   } catch (err) {
     error.value = err.messages?.[0] || err.message || __('Failed to save summary')

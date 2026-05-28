@@ -674,6 +674,10 @@ const timespanOptions = [
     value: 'last 30 days',
   },
   {
+    label: __('Since Last Working Day'),
+    value: 'since last working day',
+  },
+  {
     label: __('Yesterday'),
     value: 'yesterday',
   },
