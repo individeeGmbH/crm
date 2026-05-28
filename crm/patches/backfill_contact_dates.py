@@ -19,6 +19,6 @@ def execute():
         SET l.last_contact_on = stats.last_call_date,
             l.next_action_on = DATE_ADD(stats.last_call_date, INTERVAL 3 DAY)
         WHERE l.status IN ('Contacted', 'Reached')
-          AND (l.last_contact_on IS NULL OR l.last_contact_on = '')
+          AND (l.last_contact_on IS NULL)
     """)
     frappe.db.commit()
