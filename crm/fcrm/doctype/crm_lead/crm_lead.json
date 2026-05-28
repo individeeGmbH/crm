@@ -34,6 +34,7 @@
     "phone",
     "column_break_dbsv",
     "status",
+    "priority_campaign",
     "no_of_employees",
     "annual_revenue",
     "image",
@@ -171,6 +172,13 @@
       "fieldname": "dial_count",
       "fieldtype": "Int",
       "label": "Dial Count",
+      "read_only": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "priority_campaign",
+      "fieldtype": "Check",
+      "label": "Priority Campaign",
       "read_only": 1
     },
     {

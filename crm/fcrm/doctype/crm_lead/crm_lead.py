@@ -565,3 +565,32 @@ def update_priority_3():
         WHERE converted = 0
     """, last_working_day)
     frappe.db.commit()
+
+def update_priority_1():
+    from crm.api.doc import _get_last_working_day
+
+    last_working_day = _get_last_working_day()
+
+    frappe.db.sql("""
+        UPDATE `tabCRM Lead`
+        SET priority_1 = CASE
+            WHEN dial_count = 0 THEN 1
+            WHEN dial_count > 0 AND creation < %s THEN 1
+            ELSE 0
+        END
+        WHERE converted = 0
+    """, last_working_day)
+    frappe.db.commit()
+
+def update_priority_campaigns():
+    frappe.db.sql("""
+        UPDATE `tabCRM Lead`
+        SET priority_campaign = CASE
+            WHEN custom_campaign LIKE '%NGO%' THEN 1
+            WHEN custom_source_type  = 'paid' THEN 1
+            WHEN COALESCE(custom_visit_duration, 0) >= 30 THEN 1
+            ELSE 0
+        END
+        WHERE converted = 0
+    """)
+    frappe.db.commit()

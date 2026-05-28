@@ -192,7 +192,8 @@ scheduler_events = {
     "monthly_long": ["crm.lead_syncing.background_sync.sync_leads_from_sources_monthly"],
     "cron": {
         "*/5 * * * *": ["crm.lead_syncing.background_sync.sync_leads_from_sources_5_minutes",
-                        "crm.fcrm.doctype.crm_lead.crm_lead.update_priority_3"],
+                        "crm.fcrm.doctype.crm_lead.crm_lead.update_priority_3",
+                        "crm.fcrm.doctype.crm_lead.crm_lead.update_priority_campaigns"],
         "*/10 * * * *": ["crm.lead_syncing.background_sync.sync_leads_from_sources_10_minutes"],
         "*/15 * * * *": ["crm.lead_syncing.background_sync.sync_leads_from_sources_15_minutes"],
     },
