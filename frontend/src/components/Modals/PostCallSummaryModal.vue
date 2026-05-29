@@ -53,6 +53,17 @@
           />
         </div>
 
+        <div v-if="data?.leadName" class="flex flex-col gap-1">
+          <label class="block text-sm font-medium text-ink-gray-7">
+            {{ __('Lead Status') }}
+          </label>
+          <Link
+              doctype="CRM Lead Status"
+              :value="leadStatus"
+              :placeholder="__('Select status...')"
+              @change="(v) => (leadStatus = v)"
+          />
+        </div>
         <!-- Next Action Date -->
         <div v-if="data?.leadName" class="flex flex-col gap-1">
           <label class="block text-sm font-medium text-ink-gray-7">
@@ -94,6 +105,7 @@ const show = defineModel({type: Boolean})
 const summary = ref('')
 const rejectionReason = ref(null)
 const nextActionOn = ref('')
+const leadStatus = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
@@ -104,12 +116,29 @@ function getDefaultNextActionDate(status) {
   return today.toISOString().split('T')[0]
 }
 
-watch(show, (val) => {
+watch(show, async (val) => {
   if (val) {
     summary.value = ''
     rejectionReason.value = null
     nextActionOn.value = getDefaultNextActionDate(props.data?.status)
+    leadStatus.value = null
     error.value = null
+
+    // Load current lead status
+    if (props.data?.leadName) {
+      try {
+        const lead = await call('frappe.client.get_value', {
+          doctype: 'CRM Lead',
+          filters: {name: props.data.leadName},
+          fieldname: 'status',
+        })
+        if (lead?.status) {
+          leadStatus.value = {label: lead.status, value: lead.status}
+        }
+      } catch (e) {
+        console.error('Failed to load lead status:', e)
+      }
+    }
   }
 })
 
@@ -130,13 +159,22 @@ async function saveSummary() {
       },
       value: summary.value,
     })
-    if (props.data.leadName && nextActionOn.value) {
-      await call('frappe.client.set_value', {
-        doctype: 'CRM Lead',
-        name: props.data.leadName,
-        fieldname: 'next_action_on',
-        value: nextActionOn.value,
-      })
+    if (props.data.leadName) {
+      const leadUpdates = {}
+
+      if (nextActionOn.value)
+        leadUpdates.next_action_on = nextActionOn.value
+
+      if (leadStatus.value)
+        leadUpdates.status = leadStatus.value?.value ?? leadStatus.value
+
+      if (Object.keys(leadUpdates).length) {
+        await call('frappe.client.set_value', {
+          doctype: 'CRM Lead',
+          name: props.data.leadName,
+          fieldname: leadUpdates,
+        })
+      }
     }
     show.value = false
   } catch (err) {
