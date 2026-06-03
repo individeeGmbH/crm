@@ -541,7 +541,7 @@ def update_lead_call_info(doc, method=None):
     if doc.status == "Completed" and doc.duration >= 5:
         lead.last_contact_on = frappe.utils.now_datetime()
         if lead.status == "New" or lead.status == "Not Reached":
-            lead.status = "Contacted"
+            lead.status = "Reached"
 
     lead.save(ignore_permissions=True)
     frappe.db.sql("""
