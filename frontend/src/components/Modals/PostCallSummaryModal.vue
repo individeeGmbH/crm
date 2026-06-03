@@ -69,7 +69,8 @@
           <label class="block text-sm font-medium text-ink-gray-7">
             {{ __('Next Action On') }}
           </label>
-          <DatePicker
+          <FormControl
+              type="date"
               v-model="nextActionOn"
               :placeholder="__('Select date...')"
           />
@@ -133,7 +134,7 @@ watch(show, async (val) => {
           fieldname: 'status',
         })
         if (lead?.status) {
-          leadStatus.value = {label: lead.status, value: lead.status}
+          leadStatus.value = lead.status
         }
       } catch (e) {
         console.error('Failed to load lead status:', e)
