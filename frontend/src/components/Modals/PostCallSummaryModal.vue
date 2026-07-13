@@ -157,8 +157,7 @@ async function saveSummary() {
       fieldname: {
         summary: summary.value,
         rejection_reason: rejectionReason.value?.value ?? rejectionReason.value ?? '',
-      },
-      value: summary.value,
+      }
     })
     if (props.data.leadName) {
       const leadUpdates = {}
